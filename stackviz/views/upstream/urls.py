@@ -34,7 +34,8 @@ urlpatterns = patterns('',
                            GerritURLEndpoint.as_view(),
                            name='gerrit_url'),
 
-                       url(r'^api_run_id_(?P<run_id>[a-zA-Z0-9!$* \t\r\n\-]+).json$',
+                       url(r'^api_run_id_(?P<run_id>[a-zA-Z0-9!$* '
+                           '\t\r\n\-]+).json$',
                            RunMetadataEndpoint.as_view(),
                            name='run_metadata_url')
                        )

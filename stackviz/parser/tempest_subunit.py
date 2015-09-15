@@ -46,10 +46,11 @@ class InvalidSubunitProvider(Exception):
 class SubunitProvider(object):
     @property
     def name(self):
-        """Returns a unique name for this provider, such that a valid URL
-        fragment pointing to a particular stream from this provider is
-        `name_index`, applicable for paths to pages and data files making use
-        of the stream.
+        """Returns a unique name for this provider,
+
+        The unique name is such that a valid URL fragment pointing to a
+        particular stream from this provider is `name_index`, applicable
+        for paths to pages and data files making use of the stream.
 
         :return: a path fragment referring to the stream at `index` from this
                  provider
@@ -72,8 +73,7 @@ class SubunitProvider(object):
         raise NotImplementedError()
 
     def get_stream(self, index):
-        """Returns a file-like object representing the subunit stream at the
-        given index.
+        """Returns a file-like object representing the subunit stream
 
         :param index: the index of the stream; must be between `0` and
                       `count - 1` (inclusive)
@@ -87,8 +87,7 @@ class SubunitProvider(object):
 
     @property
     def streams(self):
-        """Creates a generator that iterates over each stream available in
-        this provider.
+        """Creates a generator to iterate over every stream in the provider
 
         :return: each stream available from this generator
         """

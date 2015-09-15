@@ -44,6 +44,7 @@ def _get_runs(change_id):
 
     return ret_list
 
+
 def _get_metadata(run_id):
     """Returns a dict of run_metadata objects associated with a run_id
 
@@ -56,7 +57,7 @@ def _get_metadata(run_id):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    metadata = api.get_run_metadata(run_id,session=session)
+    metadata = api.get_run_metadata(run_id, session=session)
     ret_list = []
 
     for meta in metadata:
@@ -69,6 +70,7 @@ class GerritURLEndpoint(Endpoint):
 
     def get(self, request, change_id):
         return _get_runs(change_id)
+
 
 class RunMetadataEndpoint(Endpoint):
 
