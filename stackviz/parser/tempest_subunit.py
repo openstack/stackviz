@@ -29,14 +29,9 @@ from testtools import StreamToDict
 from testrepository.repository.file import RepositoryFactory
 from testrepository.repository.file import RepositoryNotFound
 
-from stackviz import settings
-
 
 NAME_SCENARIO_PATTERN = re.compile(r'^(.+) \((.+)\)$')
 NAME_TAGS_PATTERN = re.compile(r'^(.+)\[(.+)\]$')
-
-
-_provider_cache = None
 
 
 class InvalidSubunitProvider(Exception):
@@ -168,39 +163,44 @@ class StandardInputProvider(SubunitProvider):
         return self.buffer
 
 
-def get_providers():
+def get_providers(repository_paths=None, stream_paths=None, stdin=False):
     """Loads all test providers from locations configured in settings.
 
+    :param repository_paths: a list of directory paths containing
+                            '.testrepository' folders to read
+    :param stream_paths: a list of paths to direct subunit streams
+    :param stdin: if true, read a subunit stream from standard input
     :return: a dict of loaded provider names and their associated
              :class:`SubunitProvider` instances
     :rtype: dict[str, SubunitProvider]
     """
-    global _provider_cache
+    if repository_paths is None:
+        repository_paths = []
 
-    if _provider_cache is not None:
-        return _provider_cache
+    if stream_paths is None:
+        stream_paths = []
 
-    _provider_cache = {}
+    ret = {}
 
-    for path in settings.TEST_REPOSITORIES:
+    for path in repository_paths:
         try:
             p = RepositoryProvider(path)
-            _provider_cache[p.name] = p
+            ret[p.name] = p
         except (ValueError, RepositoryNotFound):
             continue
 
-    for path in settings.TEST_STREAMS:
+    for path in stream_paths:
         try:
             p = FileProvider(path)
-            _provider_cache[p.name] = p
+            ret[p.name] = p
         except InvalidSubunitProvider:
             continue
 
-    if settings.TEST_STREAM_STDIN:
+    if stdin:
         p = StandardInputProvider()
-        _provider_cache[p.name] = p
+        ret[p.name] = p
 
-    return _provider_cache
+    return ret
 
 
 def _clean_name(name):

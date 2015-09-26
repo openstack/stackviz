@@ -14,163 +14,171 @@
 
 from __future__ import print_function
 
-import django
+import datetime
 import gzip
+import json
 import os
 import shutil
 
 from argparse import ArgumentParser
-from django.http import Http404
-
-from django.core.urlresolvers import resolve
-from django.test import RequestFactory
+from functools import partial
 
 from stackviz.parser import tempest_subunit
-from stackviz import settings
-
-
-EXPORT_PATHS = [
-    '/index.html',
-    '/tempest_aggregate.html'
-]
-
 
 _base = os.path.dirname(os.path.abspath(__file__))
+_tempest_count = 0
 
 
-def fake_render_view(path):
-    factory = RequestFactory()
-    request = factory.get(path)
-
-    match = resolve(path)
-    response = match.func(request, *match.args, **match.kwargs)
-
-    if hasattr(response, "render"):
-        response.render()
-
-    return response
-
-
-def export_single_page(path, dest_dir, use_gzip=False):
-    dest_file = path
-    if dest_file.startswith('/'):
-        dest_file = dest_file[1:]
-
-    open_func = open
-    if use_gzip:
+def open_compressed(output_dir, file_name, compress):
+    if compress:
+        file_name += ".gz"
         open_func = gzip.open
-        dest_file += ".gz"
+    else:
+        open_func = open
 
-    try:
-        content = fake_render_view(path).content
-
-        with open_func(os.path.join(dest_dir, dest_file), 'wb') as f:
-            f.write(content)
-    except Http404 as ex:
-        print("Warning: skipping %s due to error: %s" % (path, ex.message))
+    return open_func(os.path.join(output_dir, file_name), 'wb'), file_name
 
 
-def init_django(args):
-    # remove leading / from static URL to give them correct filesystem paths
-    settings.STATIC_URL = settings.STATIC_URL[1:]
-    settings.USE_GZIP = args.gzip
-    settings.OFFLINE = True
+def json_date_handler(object):
+    if isinstance(object, (datetime.datetime, datetime.date)):
+        return object.isoformat()
 
-    if args.repository or args.stream_file or args.stdin:
-        settings.TEST_REPOSITORIES = []
-        settings.TEST_STREAMS = []
-        settings.TEST_STREAM_STDIN = False
+    return None
 
-    if args.repository:
-        settings.TEST_REPOSITORIES = args.repository
 
-    if args.stream_file:
-        settings.TEST_STREAMS = args.stream_file
+def export_tempest_tree(stream, output_stream):
+    converted = tempest_subunit.convert_stream(stream, strip_details=True)
+    tree = tempest_subunit.reorganize(converted)
+    json.dump(tree, output_stream, default=json_date_handler)
+    output_stream.close()
 
-    if args.stdin:
-        settings.TEST_STREAM_STDIN = True
 
-    if args.dstat:
-        settings.DSTAT_CSV = args.dstat
+def export_tempest_raw(stream, output_stream):
+    converted = tempest_subunit.convert_stream(stream, strip_details=True)
+    json.dump(converted, output_stream, default=json_date_handler)
+    output_stream.close()
 
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "stackviz.settings")
-    django.setup()
+
+def export_tempest_details(stream, output_stream):
+    converted = tempest_subunit.convert_stream(stream, strip_details=True)
+
+    output = {}
+    for entry in converted:
+        output[entry['name']] = entry['details']
+
+    json.dump(output, output_stream, default=json_date_handler)
+    output_stream.close()
+
+
+def export_tempest(provider, output_dir, dstat, compress):
+    global _tempest_count
+
+    ret = []
+
+    for i in range(provider.count):
+        path_base = 'tempest_%s_%d' % (provider.name, i)
+        if provider.count > 1:
+            name = '%s (%d)' % (provider.description, i)
+        else:
+            name = provider.description
+
+        open_ = partial(open_compressed,
+                        output_dir=output_dir,
+                        compress=compress)
+
+        stream_raw, path_raw = open_(file_name=path_base + '_raw.json')
+        export_tempest_raw(provider.get_stream(i), stream_raw)
+
+        stream_tree, path_tree = open_(file_name=path_base + '_tree.json')
+        export_tempest_tree(provider.get_stream(i), stream_tree)
+
+        stream_details, path_details = open_(
+            file_name=path_base + '_details.json')
+        export_tempest_details(provider.get_stream(i), stream_details)
+
+        entry = {
+            'id': _tempest_count,
+            'name': name,
+            'raw': path_raw,
+            'tree': path_tree,
+            'details': path_details
+        }
+        entry.update({'dstat': dstat} if dstat else {})
+
+        ret.append(entry)
+        _tempest_count += 1
+
+    return ret
+
+
+def export_dstat(path, output_dir, compress):
+    f = open(path, 'rb')
+    out_stream, out_file = open_compressed(
+        output_dir,
+        'dstat_log.csv',
+        compress)
+
+    shutil.copyfileobj(f, out_stream)
+
+    f.close()
+    out_stream.close()
+
+    return out_file
 
 
 def main():
-    parser = ArgumentParser(description="Generates a self-contained, static "
-                                        "StackViz site at the given path.")
+    parser = ArgumentParser(description="Generates JSON data files for a "
+                                        "StackViz site.")
     parser.add_argument("path",
                         help="The output directory. Will be created if it "
                              "doesn't already exist.")
-    parser.add_argument("--ignore-bower",
-                        help="Ignore missing Bower components.",
-                        action="store_true")
     parser.add_argument("-z", "--gzip",
                         help="Enable gzip compression for data files.",
                         action="store_true")
     parser.add_argument("-f", "--stream-file",
                         action="append",
-                        help="Include the given direct subunit stream.")
+                        help="Include the given direct subunit stream; can be "
+                             "used multiple times.")
     parser.add_argument("-r", "--repository",
                         action="append",
                         help="A directory containing a `.testrepository` to "
-                             "include. If not provided, the `settings.py` "
-                             "configured values will be used.")
+                             "include; can be used multiple times.")
     parser.add_argument("-i", "--stdin",
                         help="Read a direct subunit stream from standard "
                              "input.",
                         action="store_true")
     parser.add_argument("--dstat",
                         help="The path to the DStat log file (CSV-formatted) "
-                             "to include. If not provided, the `settings.py` "
-                             "configured value will be used.")
+                             "to include.")
 
     args = parser.parse_args()
 
-    if not args.ignore_bower:
-        if not os.listdir(os.path.join(_base, 'static', 'components')):
-            print("Bower components have not been installed, please run "
-                  "`bower install`")
-            return 1
-
-    if os.path.exists(args.path):
-        if os.listdir(args.path):
-            print("Destination exists and is not empty, cannot continue")
-            return 1
-    else:
+    if not os.path.exists(args.path):
         os.mkdir(args.path)
 
-    init_django(args)
+    dstat = None
+    if args.dstat:
+        print("Exporting DStat log")
+        dstat = export_dstat(args.dstat, args.path, args.gzip)
 
-    print("Copying static files ...")
-    shutil.copytree(os.path.join(_base, 'static'),
-                    os.path.join(args.path, 'static'))
+    providers = tempest_subunit.get_providers(
+        args.repository,
+        args.stream_file,
+        args.stdin)
 
-    for path in EXPORT_PATHS:
-        print("Rendering:", path)
-        export_single_page(path, args.path)
+    tempest_config_entries = []
 
-    for provider in tempest_subunit.get_providers().values():
-        for i in range(provider.count):
-            param = (provider.name, i)
+    for provider in providers.values():
+        print("Exporting Tempest provider: %s (%d)" % (provider.description,
+                                                       provider.count))
+        tempest_config_entries.extend(
+            export_tempest(provider, args.path, dstat, args.gzip)
+        )
 
-            print("Rendering views for tempest run %s #%d" % param)
-            export_single_page('/tempest_timeline_%s_%d.html' % param,
-                               args.path)
-            export_single_page('/tempest_results_%s_%d.html' % param,
-                               args.path)
-
-            print("Exporting data for tempest run %s #%d" % param)
-            export_single_page('/tempest_api_tree_%s_%d.json' % param,
-                               args.path, args.gzip)
-            export_single_page('/tempest_api_raw_%s_%d.json' % param,
-                               args.path, args.gzip)
-            export_single_page('/tempest_api_details_%s_%d.json' % param,
-                               args.path, args.gzip)
-
-    print("Exporting DStat log: dstat_log.csv")
-    export_single_page('/dstat_log.csv', args.path, args.gzip)
+    with open(os.path.join(args.path, 'config.json'), 'w') as f:
+        json.dump({
+            'tempest': tempest_config_entries
+        }, f)
 
 
 if __name__ == '__main__':
