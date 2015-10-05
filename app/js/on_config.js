@@ -7,10 +7,9 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider) {
 
   $locationProvider.html5Mode(true);
 
-  $stateProvider
-  .state('Home', {
+  $stateProvider.state('home', {
     url: '/',
-    controller: 'ExampleCtrl as home',
+    controller: 'HomeCtrl as home',
     templateUrl: 'home.html',
     title: 'Home'
   });
