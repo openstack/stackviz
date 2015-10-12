@@ -14,6 +14,13 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider) {
     title: 'Home'
   });
 
+  $stateProvider.state('timeline', {
+    url: '/timeline/{datasetId:int}',
+    controller: 'TimelineCtrl as timeline',
+    templateUrl: 'timeline.html',
+    title: 'Timeline'
+  });
+
   $urlRouterProvider.otherwise('/');
 
 }

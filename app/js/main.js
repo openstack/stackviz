@@ -10,6 +10,7 @@ require('./templates');
 require('./controllers/_index');
 require('./services/_index');
 require('./directives/_index');
+require('./filters/_index');
 
 var bootstrap = function() {
 
@@ -20,6 +21,7 @@ var bootstrap = function() {
     'app.controllers',
     'app.services',
     'app.directives',
+    'app.filters',
     'picardy.fontawesome'
   ];
 

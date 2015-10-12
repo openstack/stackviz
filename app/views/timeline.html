@@ -1,0 +1,42 @@
+<header class="bs-header">
+    <div class="container">
+        <h1 class="page-header">
+            Timeline: {{ timeline.dataset.name }}
+            <small>#{{ timeline.dataset.id }}</small>
+        </h1>
+    </div>
+</header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="alert alert-danger" ng-if="!!timeline.error">
+                {{ timeline.error }}
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-if="!timeline.error">
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><fa name="clock-o" fw></fa> Timeline</h3>
+                </div>
+
+                <timeline class="panel-body"
+                          dataset="timeline.dataset"
+                          hovered-item="timeline.hoveredItem"
+                          selected-item="timeline.selectedItem"></timeline>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><fa name="info" fw></fa> Details</h3>
+                </div>
+
+                <timeline-details hovered-item="timeline.hoveredItem"
+                                  selected-item="timeline.selectedItem"></timeline-details>
+            </div>
+        </div>
+    </div>
+</div>

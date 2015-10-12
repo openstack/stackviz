@@ -1,0 +1,31 @@
+<div class="panel-body" ng-if="!item">
+    <i>Hover over a timeline item for details.</i>
+</div>
+
+<div class="panel-body" ng-if="!!item">
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <td>Name</td>
+            <td>{{item.name | split:'.' | pickRight:1}}</td>
+        </tr>
+        <tr>
+            <td>Class</td>
+            <td>{{item.name | split:'.' | pickRight:2}}</td>
+        <tr>
+            <td>Module</td>
+            <td>{{item.name | split:'.' | slice:0:-2 | join:'.'}}</td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>{{item.status}}</td>
+        </tr>
+        <tr>
+            <td>Tags</td>
+            <td>{{item.tags | join:', '}}</td>
+        </tr>
+        <tr>
+            <td>Duration</td>
+            <td>{{item.duration}} seconds</td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,8 @@
+timeline-details table {
+    table-layout: fixed;
+    width: 100%;
+    word-wrap: break-word
+}
+timeline-details table td:nth-child(1) {
+    width: 25%;
+}
