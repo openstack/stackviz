@@ -35,8 +35,8 @@ var bootstrap = function() {
   angular.bootstrap(document, ['app']);
 
   window.bootstrap = null;
-
 };
+
 // create and bootstrap application
 angular.element(document).ready(bootstrap);
 window.bootstrap = bootstrap;
