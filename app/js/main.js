@@ -11,8 +11,7 @@ require('./controllers/_index');
 require('./services/_index');
 require('./directives/_index');
 
-// create and bootstrap application
-angular.element(document).ready(function() {
+var bootstrap = function() {
 
   var requires = [
     'ui.router',
@@ -35,4 +34,9 @@ angular.element(document).ready(function() {
 
   angular.bootstrap(document, ['app']);
 
-});
+  window.bootstrap = null;
+
+};
+// create and bootstrap application
+angular.element(document).ready(bootstrap);
+window.bootstrap = bootstrap;
