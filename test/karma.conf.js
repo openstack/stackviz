@@ -12,10 +12,11 @@ module.exports = function(config) {
     preprocessors: {
       'app/js/**/*.js': ['browserify', 'babel', 'coverage']
     },
-    browsers: ['Chrome'],
+    browsers: ['PhantomJS'],
     reporters: ['progress', 'coverage'],
 
     autoWatch: true,
+    singleRun: true,
 
     browserify: {
       debug: true,
@@ -35,12 +36,11 @@ module.exports = function(config) {
     urlRoot: '/__karma__/',
 
     files: [
-      // 3rd-party resources
-      'node_modules/angular/angular.min.js',
-      'node_modules/angular-mocks/angular-mocks.js',
-
       // app-specific code
       'app/js/main.js',
+
+      // 3rd-party resources
+      'node_modules/angular-mocks/angular-mocks.js',
 
       // test files
       'test/unit/**/*.js'
