@@ -37,7 +37,7 @@ function DatasetService($q, $http) {
   service.raw = function(dataset) {
     return $http({
       cache: true,
-      url: dataset.raw,
+      url: "data/" + dataset.raw,
       method: 'GET'
     });
   };
@@ -45,7 +45,7 @@ function DatasetService($q, $http) {
   service.details = function(dataset) {
     return $http({
       cache: true,
-      url: dataset.details,
+      url: "data/" + dataset.details,
       method: 'GET'
     });
   };
@@ -53,7 +53,7 @@ function DatasetService($q, $http) {
   service.tree = function(dataset) {
     return $http({
       cache: true,
-      url: dataset.tree,
+      url: "data/" + dataset.tree,
       method: 'GET'
     });
   };
@@ -61,7 +61,7 @@ function DatasetService($q, $http) {
   service.dstat = function(dataset) {
     return $http({
       cache: true,
-      url: dataset.dstat,
+      url: "data/" + dataset.dstat,
       method: 'GET'
     });
   };
