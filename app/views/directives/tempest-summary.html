@@ -1,15 +1,55 @@
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">{{ dataset.name }}</h3>
+        <h3 class="panel-title">
+            {{dataset.name}}
+            <span class="text-muted" style="font-size: 65%">
+                {{stats.start | date:'d MMM, yyyy'}}
+            </span>
+        </h3>
     </div>
     <div class="panel-body">
-        More details go here
+        <div class="col-xs-3 text-center">
+            <span class="huge">{{timeDiff | secondsToTime}}</span>
+            <br>
+            runtime
+        </div>
+        <div class="col-xs-3 text-center">
+            <span class="huge">{{stats.count}}</span>
+            <br>
+            tests run
+        </div>
+        <div class="col-xs-3 text-center">
+            <span class="huge text-danger">{{stats.failures.length}}</span>
+            <br>
+            failed
+        </div>
+        <div class="col-xs-3 text-center">
+            <span class="huge text-primary">{{stats.skips.length}}</span>
+            <br>
+            skipped
+        </div>
     </div>
     <div class="panel-footer clearfix">
         <div class="btn-group pull-right">
             <a type="button"
                class="btn btn-default"
-               ui-sref="timeline({datasetId: dataset.id})">Timeline</a>
+               ui-sref="timeline({datasetId: dataset.id})">Details</a>
        </div>
     </div>
+</div>
+
+<div class="panel panel-danger" ng-if="stats.failures.length > 0">
+    <div class="panel-heading">
+        <h3 class="panel-title">Failures</h3>
+    </div>
+    <div class="list-group">
+        <a class="list-group-item" ng-repeat="fail in stats.failures">
+            <h4 class="list-group-item-heading">
+                {{fail.name | split:'.' | slice:-2 | join:'.'}}
+            </h4>
+            <p class="list-group-item-text">
+                {{fail.details}}
+            </p>
+        </a>
+    </ul>
 </div>
