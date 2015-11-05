@@ -24,6 +24,12 @@ A development server can be run as follows::
 This will open a web browser and reload code automatically as it changes on the
 filesystem.
 
+If you have subunit and dstat logs, you can create a config.json to display
+your runs::
+
+    stackviz-export -f <path/to/subunit> --dstat <path/to/dstat> app/data/
+
+
 Usage - Production
 ==================
 The production application can be build using::
@@ -56,7 +62,7 @@ Roadmap
     - Will remain in this namespace (:code:`openstack-qa/stackviz`).
     - Will decouple data processing from build process, allowing for
       distribution to nodes as a prebuilt static site.
-    - Data sources will be configured in in a :code:`config.json`.
+    - Data sources will be configured in a :code:`config.json`.
     - Will support local and remote sources via REST/JSONP (pending API spec).
 
-- Angular conversion: current codebase will be rewritten to use Angular.
+- Upstream Implementation: https://etherpad.openstack.org/p/BKgWlKIjgQ
