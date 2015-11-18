@@ -52,10 +52,10 @@ var getDstatLanes = function(data, mins, maxes) {
 
   if ('memory_usage_used' in row) {
     lanes.push([{
-        scale: d3.scale.linear().domain([0, maxes.memory_usage_used]),
-        value: function(d) { return d.memory_usage_used; },
-        color: "rgba(102, 140, 178, 0.75)",
-        text: "Memory"
+      scale: d3.scale.linear().domain([0, maxes.memory_usage_used]),
+      value: function(d) { return d.memory_usage_used; },
+      color: "rgba(102, 140, 178, 0.75)",
+      text: "Memory"
     }]);
   }
 
@@ -96,7 +96,7 @@ var getDstatLanes = function(data, mins, maxes) {
 /**
  * @ngInject
  */
-function timeline(datasetService) {
+function timeline($log, datasetService) {
   var link = function(scope, el, attrs) {
     var data = [];
     var dstat = {};
@@ -578,7 +578,7 @@ function timeline(datasetService) {
         // (dstat may not exist, but that's okay)
         initData(raw, dstat);
       }).catch(function(ex) {
-        console.error(ex);
+        $log.error(ex);
       });
     });
   };

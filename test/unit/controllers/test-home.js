@@ -2,8 +2,6 @@
 
 'use strict';
 
-window.bootstrap && window.bootstrap();
-
 describe('Unit: HomeCtrl', function() {
 
   var ctrl;

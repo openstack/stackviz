@@ -12,33 +12,25 @@ require('./services/_index');
 require('./directives/_index');
 require('./filters/_index');
 
-var bootstrap = function() {
+var requires = [
+  'ui.router',
+  'ui.bootstrap',
+  'templates',
+  'app.controllers',
+  'app.services',
+  'app.directives',
+  'app.filters',
+  'picardy.fontawesome'
+];
 
-  var requires = [
-    'ui.router',
-    'ui.bootstrap',
-    'templates',
-    'app.controllers',
-    'app.services',
-    'app.directives',
-    'app.filters',
-    'picardy.fontawesome'
-  ];
+angular.module('app', requires);
 
-  // mount on window for testing
-  window.app = angular.module('app', requires);
+angular.module('app').constant('AppSettings', require('./constants'));
 
-  angular.module('app').constant('AppSettings', require('./constants'));
+var onConfig = require('./on_config');
+angular.module('app').config(onConfig);
 
-  angular.module('app').config(require('./on_config'));
+var onRun = require('./on_run');
+angular.module('app').run(require('./on_run'));
 
-  angular.module('app').run(require('./on_run'));
-
-  angular.bootstrap(document, ['app']);
-
-  window.bootstrap = null;
-};
-
-// create and bootstrap application
-angular.element(document).ready(bootstrap);
-window.bootstrap = bootstrap;
+angular.bootstrap(document, ['app']);
