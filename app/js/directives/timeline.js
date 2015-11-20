@@ -134,11 +134,11 @@ function timeline($log, datasetService) {
         .append('clipPath')
         .attr('id', 'clip')
         .append('rect')
-        .attr('width', width); // TODO: set height later
+        .attr('width', width);
 
     var main = chart.append('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-        .attr('width', width); // TODO: set height later
+        .attr('width', width);
 
     var laneLines = main.append('g');
     var laneLabels = main.append('g');
@@ -280,31 +280,8 @@ function timeline($log, datasetService) {
           })
           .on('click', function(d) {
             var self = d3.select(this);
-            if (selectedRect) {
-              if (selectedRect.attr('data-old-fill')) {
-                selectedRect.attr('fill', selectedRect.attr('data-old-fill'));
-                selectedRect.attr('data-old-fill', null);
-              }
-
-              if (scope.selectedItem.name === d.name) {
-                scope.selectedItem = null;
-                scope.$apply();
-
-                selectedRect = null;
-                return;
-              }
-            }
-
-            scope.selectedItem = d;
+            selectItem(self, d);
             scope.$apply();
-
-            selectedRect = self;
-
-            if (!self.attr('data-old-fill')) {
-              self.attr('data-old-fill', self.attr('fill'));
-            }
-
-            self.attr('fill', 'goldenrod');
           });
 
       rects.exit().remove();
@@ -371,6 +348,30 @@ function timeline($log, datasetService) {
       groups.exit().remove();
     };
 
+    var selectItem = function(element, datum) {
+      if (selectedRect) {
+        if (selectedRect.attr('data-old-fill')) {
+          selectedRect.attr('fill', selectedRect.attr('data-old-fill'));
+          selectedRect.attr('data-old-fill', null);
+        }
+
+        if (scope.selectedItem.name === datum.name) {
+          scope.selectedItem = null;
+          selectedRect = null;
+          return;
+        }
+      }
+
+      scope.selectedItem = datum;
+      selectedRect = element;
+
+      if (!element.attr('data-old-fill')) {
+        element.attr('data-old-fill', element.attr('fill'));
+      }
+
+      element.attr('fill', 'goldenrod');
+    };
+
     var initChart = function() {
       // determine lanes available based on current data
       dstatLanes = getDstatLanes(dstat.entries, dstat.minimums, dstat.maximums);
@@ -413,6 +414,7 @@ function timeline($log, datasetService) {
           .on('brush', update);
 
       var brushElement = mini.append('g')
+          .attr('class', 'brush')
           .call(brush)
           .selectAll('rect')
           .attr('y', 1)
@@ -481,6 +483,7 @@ function timeline($log, datasetService) {
       // find data extents
       var minStart = null;
       var maxEnd = null;
+      var preselect = null;
 
       raw.forEach(function(d) {
         d.startDate = new Date(d.timestamps[0]);
@@ -491,6 +494,10 @@ function timeline($log, datasetService) {
         d.endDate = new Date(d.timestamps[1]);
         if (maxEnd === null || d.endDate > maxEnd) {
           maxEnd = d.endDate;
+        }
+
+        if (scope.preselect && d.name === scope.preselect) {
+          preselect = d;
         }
       });
 
@@ -513,6 +520,32 @@ function timeline($log, datasetService) {
       timeExtents = [ minStart, maxEnd ];
 
       initChart();
+
+      if (preselect) {
+        // determine desired viewport and item sizes to center view on
+        var extentSize = (maxEnd - minStart) / 8;
+        var itemLength = (preselect.endDate - preselect.startDate);
+        var itemMid = preselect.startDate.getTime() + (itemLength / 2);
+
+        // find real begin, end values, but don't exceed min/max time extents
+        var begin = Math.max(minStart.getTime(), itemMid - (extentSize / 2));
+        begin = Math.min(begin, maxEnd.getTime() - extentSize);
+        var end = begin + extentSize;
+
+        // update the brush extent and redraw
+        brush.extent([ begin, end ]);
+        mini.select('.brush').call(brush);
+
+        // update items to reflect the new viewport bounds
+        update();
+
+        // find + select the actual dom element
+        itemGroups.selectAll('rect').each(function(d) {
+          if (d.name === preselect.name) {
+            selectItem(d3.select(this), d);
+          }
+        });
+      }
     };
 
     chart.on('mouseout', function() {
@@ -548,7 +581,6 @@ function timeline($log, datasetService) {
       defs.attr('width', width);
       main.attr('width', width);
       mini.attr('width', width);
-      // TODO: dstat?
 
       laneLines.selectAll('.laneLine').attr('x2', width);
 
@@ -588,7 +620,8 @@ function timeline($log, datasetService) {
     scope: {
       'dataset': '=',
       'hoveredItem': '=',
-      'selectedItem': '='
+      'selectedItem': '=',
+      'preselect': '='
     },
     link: link
   };

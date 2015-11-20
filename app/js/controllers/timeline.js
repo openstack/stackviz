@@ -5,7 +5,7 @@ var controllersModule = require('./_index');
 /**
  * @ngInject
  */
-function TimelineCtrl($stateParams, datasetService) {
+function TimelineCtrl($scope, $location, $stateParams, datasetService) {
 
   // ViewModel
   var vm = this;
@@ -18,6 +18,19 @@ function TimelineCtrl($stateParams, datasetService) {
 
   vm.hoveredItem = null;
   vm.selectedItem = null;
+
+  vm.preselect = $location.search().test;
+
+  $scope.$watch(function() {
+    return vm.selectedItem;
+  }, function(value) {
+    if (value) {
+      $location.search({ test: value.name });
+      vm.preselect = null;
+    } else if (vm.preselect === null) {
+      $location.search({ test: null });
+    }
+  });
 
 }
 

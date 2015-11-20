@@ -14,9 +14,10 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider) {
   });
 
   $stateProvider.state('timeline', {
-    url: '/{datasetId:int}/timeline',
+    url: '/{datasetId:int}/timeline?test',
     controller: 'TimelineCtrl as timeline',
     templateUrl: 'timeline.html',
+    reloadOnSearch: false,
     title: 'Timeline'
   });
 
