@@ -60,7 +60,7 @@ def export_tempest_raw(stream, output_stream):
 
 
 def export_tempest_details(stream, output_stream):
-    converted = tempest_subunit.convert_stream(stream, strip_details=True)
+    converted = tempest_subunit.convert_stream(stream)
 
     output = {}
     for entry in converted:
