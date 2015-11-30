@@ -15,7 +15,7 @@
     </div>
     <div class="row" ng-if="!!home.tempest.length">
         <div class="col-lg-8">
-            <tempest-summary ng-if="home.tempest.length >= 1" dataset="home.tempest[0]"></tempest-summary>
+            <tempest-summary ng-if="home.tempest.length >= 1" dataset="home.tempest[home.focus]"></tempest-summary>
         </div>
         <div class="col-lg-4" ng-if="home.tempest.length > 1">
             <div class="panel panel-default">
@@ -23,14 +23,24 @@
                     <h3 class="panel-title">Additional Datasets</h3>
                 </div>
 
-                <div class="list-group">
-                    <a class="list-group-item"
-                       ng-repeat="dataset in home.tempest"
-                       ng-if="$index > 0"
-                       ui-sref="timeline({datasetId: dataset.id})">
+                <ul class="list-group">
+                    <li class="list-group-item"
+                        ng-repeat="dataset in home.tempest"
+                        ng-if="$index != home.focus"
+                        ng-click="home.focus = $index"
+                        style="cursor: pointer">
                         {{ dataset.name }}
-                    </a>
-                </div>
+
+                        <small class="text-muted" style="font-size: 75%">
+                            {{dataset.stats.start | date:'MM/d/yyyy'}}
+                        </small>
+
+                        <a class="btn btn-default btn-xs pull-right"
+                           ui-sref="timeline({datasetId: dataset.id})">
+                            Details
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

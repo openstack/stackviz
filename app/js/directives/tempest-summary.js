@@ -7,8 +7,11 @@ var directivesModule = require('./_index.js');
  */
 function tempestSummary() {
   var controller = function($scope, $attrs, datasetService) {
-    // TODO get extra data here
-    // (may require raw details, or extra metadata inside config.json)
+    $scope.$watch('dataset', function(dataset) {
+      var stats = dataset.stats;
+      $scope.stats = stats;
+      $scope.timeDiff = (new Date(stats.end) - new Date(stats.start)) / 1000;
+    });
   };
 
   return {
