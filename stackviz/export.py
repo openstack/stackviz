@@ -70,6 +70,56 @@ def export_tempest_details(stream, output_stream):
     output_stream.close()
 
 
+def get_stats(stream):
+    converted = tempest_subunit.convert_stream(stream, strip_details=False)
+
+    start = None
+    end = None
+    total_duration = 0
+    failures = []
+    skips = []
+
+    for entry in converted:
+        # find min/max dates
+        entry_start, entry_end = entry['timestamps']
+        if start is None or entry_start < start:
+            start = entry_start
+
+        if end is None or entry_end > end:
+            end = entry_end
+
+        total_duration += entry['duration']
+
+        # find details for unsuccessful tests (fail or skip)
+        if entry['status'] == 'fail':
+            # if available, the error message will be the last non-empty line
+            # of the traceback
+            msg = None
+            if 'traceback' in entry['details']:
+                msg = entry['details']['traceback'].strip().splitlines()[-1]
+
+            failures.append({
+                'name': entry['name'],
+                'duration': entry['duration'],
+                'details': msg
+            })
+        elif entry['status'] == 'skip':
+            skips.append({
+                'name': entry['name'],
+                'duration': entry['duration'],
+                'details': entry['details'].get('reason')
+            })
+
+    return {
+        'count': len(converted),
+        'start': start,
+        'end': end,
+        'total_duration': total_duration,
+        'failures': failures,
+        'skips': skips
+    }
+
+
 def export_tempest(provider, output_dir, dstat, compress):
     global _tempest_count
 
@@ -96,12 +146,15 @@ def export_tempest(provider, output_dir, dstat, compress):
             file_name=path_base + '_details.json')
         export_tempest_details(provider.get_stream(i), stream_details)
 
+        stats = get_stats(provider.get_stream(i))
+
         entry = {
             'id': _tempest_count,
             'name': name,
             'raw': path_raw,
             'tree': path_tree,
-            'details': path_details
+            'details': path_details,
+            'stats': stats
         }
         entry.update({'dstat': dstat} if dstat else {})
 
@@ -178,7 +231,7 @@ def main():
     with open(os.path.join(args.path, 'config.json'), 'w') as f:
         json.dump({
             'tempest': tempest_config_entries
-        }, f)
+        }, f, default=json_date_handler)
 
 
 if __name__ == '__main__':
