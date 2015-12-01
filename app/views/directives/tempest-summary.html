@@ -43,7 +43,9 @@
         <h3 class="panel-title">Failures</h3>
     </div>
     <div class="list-group">
-        <a class="list-group-item" ng-repeat="fail in stats.failures">
+        <a class="list-group-item"
+           ng-repeat="fail in stats.failures"
+           ui-sref="timeline({datasetId: dataset.id, test: fail.name})">
             <h4 class="list-group-item-heading">
                 {{fail.name | split:'.' | slice:-2 | join:'.'}}
             </h4>
