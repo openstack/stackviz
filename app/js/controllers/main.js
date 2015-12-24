@@ -8,6 +8,7 @@ var controllersModule = require('./_index');
 function MainCtrl($window, $scope) {
   $window.addEventListener('resize', function () {
     $scope.$broadcast('windowResize');
+    $scope.$apply();
   });
 }
 
