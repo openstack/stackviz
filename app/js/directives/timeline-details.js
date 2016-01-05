@@ -6,6 +6,10 @@ var directivesModule = require('./_index.js');
  * @ngInject
  */
 function timelineDetails() {
+
+  /**
+   * @ngInject
+   */
   var controller = function($scope) {
     $scope.item = null;
 

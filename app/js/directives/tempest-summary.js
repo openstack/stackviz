@@ -6,6 +6,10 @@ var directivesModule = require('./_index.js');
  * @ngInject
  */
 function tempestSummary() {
+
+  /**
+   * @ngInject
+   */
   var controller = function($scope, $attrs, datasetService) {
     $scope.$watch('dataset', function(dataset) {
       var stats = dataset.stats;

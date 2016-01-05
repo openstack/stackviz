@@ -33,4 +33,6 @@ angular.module('app').config(onConfig);
 var onRun = require('./on_run');
 angular.module('app').run(require('./on_run'));
 
-angular.bootstrap(document, ['app']);
+angular.bootstrap(document, ['app'], {
+  strictDi: true
+});
