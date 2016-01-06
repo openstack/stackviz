@@ -16,6 +16,7 @@ function timelineDetails() {
   return {
     restrict: 'EA',
     scope: {
+      'dataset': '=',
       'item': '='
     },
     controller: controller,

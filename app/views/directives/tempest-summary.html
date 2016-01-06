@@ -45,7 +45,7 @@
     <div class="list-group">
         <a class="list-group-item"
            ng-repeat="fail in stats.failures"
-           ui-sref="timeline({datasetId: dataset.id, test: fail.name})">
+           ui-sref="testDetails({datasetId: dataset.id, test: fail.name})">
             <h4 class="list-group-item-heading">
                 {{fail.name | split:'.' | slice:-2 | join:'.'}}
             </h4>
