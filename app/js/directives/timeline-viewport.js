@@ -54,6 +54,14 @@ function timelineViewport($document) {
         .style('text-anchor', 'middle')
         .style('font', '9px sans-serif');
 
+    var cursorItemText = cursorGroup.append('text')
+        .attr('x', 0)
+        .attr('y', -22)
+        .attr('dy', '-.5ex')
+        .style('text-anchor', 'middle')
+        .style('font', '12px sans-serif')
+        .style('font-weight', 'bold');
+
     var selectedRect = null;
 
     var color = function(rect, color) {
@@ -79,26 +87,24 @@ function timelineViewport($document) {
     };
 
     var rectMouseOver = function(d) {
-      if (selectedRect !== null) {
-        return;
-      }
-
       timelineController.setHover(d);
       scope.$apply();
 
-      color(d3.select(this), statusColorMap.hover);
+      if (!timelineController.selection
+          || d !== timelineController.selection.item) {
+        color(d3.select(this), statusColorMap.hover);
+      }
     };
 
     var rectMouseOut = function(d) {
-      if (selectedRect !== null) {
-        return;
-      }
-
       timelineController.clearHover();
       scope.$apply();
 
-      var self = d3.select(this);
-      uncolor(d3.select(this));
+      if (!timelineController.selection
+          || d !== timelineController.selection.item) {
+        var self = d3.select(this);
+        uncolor(d3.select(this));
+      }
     };
 
     var rectClick = function(d) {
@@ -240,6 +246,26 @@ function timelineViewport($document) {
             .attr('transform', 'translate(' + relX + ', 0)');
 
         cursorText.text(d3.time.format('%X')(currentTime));
+
+        if (timelineController.hover) {
+          var name = timelineController.hover.name.split('.').pop();
+          cursorItemText.text(name);
+
+          var width = cursorItemText.node().getComputedTextLength();
+          var leftEdge = margin.left;
+          var rightEdge = timelineController.width + margin.left;
+
+          if (px + (width / 2) > rightEdge) {
+            cursorItemText.attr('dx', -(px - (rightEdge - width / 2)));
+          } else if (px - (width / 2) < leftEdge) {
+            cursorItemText.attr('dx', (leftEdge + width / 2) - px);
+          } else {
+            cursorItemText.attr('dx', 0);
+          }
+        } else {
+          cursorItemText.text('');
+          cursorItemText.attr('dx', 0);
+        }
       }
     });
 

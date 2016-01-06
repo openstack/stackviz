@@ -1,13 +1,27 @@
-<div class="panel-body" ng-if="!item">
-    <i>Hover over a timeline item for details.</i>
+<div ng-if="!item" class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Test Details</h3>
+    </div>
+    <div class="panel-body">
+        <i>Select a test above for details.</i>
+    </div>
 </div>
 
-<div class="panel-body" ng-if="!!item">
+<div ng-if="!!item"
+     class="panel"
+     ng-class="{'panel-success': item.status == 'success', 'panel-info': item.status == 'skip', 'panel-danger': item.status == 'fail'}">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            Details: {{item.name | split:'.' | pickRight:1}}
+            <span class="label label-success"
+                  ng-if="item.status == 'success'">success</span>
+            <span class="label label-info"
+                  ng-if="item.status == 'skip'">skip</span>
+            <span class="label label-danger"
+                  ng-if="item.status == 'fail'">fail</span>
+        </h3>
+    </div>
     <table class="table table-bordered table-hover table-striped">
-        <tr>
-            <td>Name</td>
-            <td>{{item.name | split:'.' | pickRight:1}}</td>
-        </tr>
         <tr>
             <td>Class</td>
             <td>{{item.name | split:'.' | pickRight:2}}</td>
@@ -16,16 +30,26 @@
             <td>{{item.name | split:'.' | slice:0:-2 | join:'.'}}</td>
         </tr>
         <tr>
-            <td>Status</td>
-            <td>{{item.status}}</td>
-        </tr>
-        <tr>
             <td>Tags</td>
             <td>{{item.tags | join:', '}}</td>
         </tr>
         <tr>
             <td>Duration</td>
-            <td>{{item.duration}} seconds</td>
+            <td>{{item.duration | number:1}} seconds</td>
+        </tr>
+        <tr>
+            <td>Start</td>
+            <td>{{item.startDate | date:'medium'}}</td>
+        </tr>
+        <tr>
+            <td>End</td>
+            <td>{{item.endDate | date:'medium'}}</td>
         </tr>
     </table>
+    <div class="panel-footer clearfix">
+        <div class="btn-group pull-right">
+            <a type="button"
+               class="btn btn-default">Details</a>
+       </div>
+    </div>
 </div>
