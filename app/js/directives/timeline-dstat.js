@@ -88,8 +88,7 @@ function timelineDstat() {
         .attr('height', height);
 
     var main = chart.append('g')
-        .attr('transform', 'translate(' + margin.left + ',0)')
-        .attr('width', timelineController.width);
+        .attr('transform', 'translate(' + margin.left + ',0)');
 
     var xSelected = timelineController.axes.selection;
     var y = d3.scale.linear();
@@ -181,8 +180,7 @@ function timelineDstat() {
     });
 
     scope.$on('update', function() {
-      chart.style('width', timelineController.width + margin.left + margin.right);
-      main.style('width', timelineController.width);
+      chart.attr('width', timelineController.width + margin.left + margin.right);
       update(timelineController.dstat);
     });
 
