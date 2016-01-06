@@ -17,13 +17,14 @@ function timelineOverview() {
 
     var chart = d3.select(el[0])
         .append('svg')
-        .attr('height', height)
-        .style('position', 'relative')
-        .style('width', timelineController.width)
-        .style('left', margin.left)
-        .style('right', margin.right);
+        .attr('width', timelineController.width + margin.left + margin.right)
+        .attr('height', height);
 
-    var groups = chart.append('g');
+    var groups = chart.append('g')
+        .attr('transform', 'translate(' + margin.left + ',0)');
+
+    var brushGroup = chart.append('g')
+        .attr('transform', 'translate(' + margin.left + ',0)');
 
     var updateBrush = function() {
       timelineController.setViewExtents(brush.extent());
@@ -73,7 +74,7 @@ function timelineOverview() {
       var targetEnd = begin + extentSize;
 
       brush.extent([targetStart, targetEnd]);
-      chart.select('.brush').call(brush);
+      brushGroup.select('.brush').call(brush);
       updateBrush();
 
       return true;
@@ -113,7 +114,7 @@ function timelineOverview() {
       }
 
       brush.extent([targetStart, targetEnd]);
-      chart.select('.brush').call(brush);
+      brushGroup.select('.brush').call(brush);
       updateBrush();
 
       return true;
@@ -134,7 +135,7 @@ function timelineOverview() {
           .extent([start, reducedEnd])
           .on('brush', updateBrush);
 
-      var brushElement = chart.append('g')
+      var brushElement = brushGroup.append('g')
           .attr('class', 'brush')
           .call(brush)
           .selectAll('rect')
@@ -147,7 +148,7 @@ function timelineOverview() {
     });
 
     scope.$on('update', function() {
-      chart.style('width', timelineController.width);
+      chart.attr('width', timelineController.width + margin.left + margin.right);
       updateItems(timelineController.data);
     });
 

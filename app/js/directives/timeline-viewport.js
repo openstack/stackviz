@@ -30,8 +30,7 @@ function timelineViewport($document) {
         .attr('width', timelineController.width);
 
     var main = chart.append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-        .attr('width', timelineController.width);
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     var laneLines = main.append('g');
     var laneLabels = main.append('g');
@@ -247,7 +246,6 @@ function timelineViewport($document) {
       y.domain([0, data.length]).range([0, height]);
 
       defs.attr('height', height);
-      main.attr('height', height);
       cursor.attr('y1', y(-0.1));
 
       loaded = true;
@@ -258,9 +256,8 @@ function timelineViewport($document) {
         return;
       }
 
-      chart.style('width', timelineController.width + margin.left + margin.right);
+      chart.attr('width', timelineController.width + margin.left + margin.right);
       defs.attr('width', timelineController.width);
-      main.attr('width', timelineController.width);
 
       update(timelineController.data);
     });
