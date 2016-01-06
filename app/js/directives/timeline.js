@@ -30,6 +30,10 @@ var parseWorker = function(tags) {
  * @ngInject
  */
 function timeline($log, datasetService) {
+
+  /**
+   * @ngInject
+   */
   var controller = function($scope) {
     var self = this;
     self.statusColorMap = statusColorMap;
@@ -128,6 +132,28 @@ function timeline($log, datasetService) {
     self.clearSelection = function() {
       self.selection = null;
       $scope.$broadcast('select', null);
+    };
+
+    self.selectNextItem = function() {
+      if (self.selection) {
+        var worker = self.selection.item.worker;
+        if (self.selection.index < self.data[worker].values.length - 1) {
+          self.selectIndex(worker, (self.selection.index) + 1);
+          return true;
+        }
+      }
+      return false;
+    };
+
+    self.selectPreviousItem = function() {
+      if (self.selection) {
+        var worker = self.selection.item.worker;
+        if (self.selection.index > 0) {
+          self.selectIndex(worker, (self.selection.index) - 1);
+          return true;
+        }
+      }
+      return false;
     };
 
     var initData = function(raw) {
@@ -230,6 +256,19 @@ function timeline($log, datasetService) {
 
     scope.$on('windowResize', updateWidth);
     updateWidth();
+
+    d3.select(window)
+      .on("keydown", function() {
+        var code = d3.event.keyCode;
+        if (code == 37) {
+          ctrl.selectPreviousItem();
+        }
+        else if (code == 39) {
+          ctrl.selectNextItem();
+        }
+        scope.$apply();
+      });
+
   };
 
   return {
