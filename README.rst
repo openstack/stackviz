@@ -1,11 +1,11 @@
-=================
-StackViz: Angular
-=================
+========
+StackViz
+========
 A visualization utility to help analyze the performance of DevStack setup and
 Tempest executions.
 
-Installation
-============
+Installation - Frontend
+=======================
 Installation of the frontend requires Node.js and Gulp. On Ubuntu::
 
     sudo apt-get install nodejs npm nodejs-legacy
@@ -14,6 +14,13 @@ Installation of the frontend requires Node.js and Gulp. On Ubuntu::
 Then, install the Node modules by running, from the project directory::
 
     npm install
+
+Installation - Processing
+=========================
+The data processor is a small Python module located in the same source tree. To
+install, run::
+
+    sudo pip install .
 
 Usage - Development
 ===================
@@ -29,6 +36,10 @@ your runs::
 
     stackviz-export -f <path/to/subunit> --dstat <path/to/dstat> app/data/
 
+During :code:`gulp dev`, files written to :code:`app/data/` will be
+automatically synchronized with the browser. Note that these files will *not* be
+copied to :code:`build/` during :code:`gulp prod`, but you can copy them
+manually using :code:`gulp data`.
 
 Usage - Production
 ==================
@@ -49,20 +60,18 @@ distribution. Note that all files are not required:
 - Source maps (:code:`js/main.js.map`, :code:`js/main.js.map.gz`): only required
   for debugging purposes.
 
-Roadmap
+Data should be written to :code:`build/data/` using :code:`stackviz-export` like
+above. Note that the static production code generated above is portable, and can
+be generated anywhere and copied to another host to be combined with exported
+data.
+
+Testing
 =======
-- Project split: All server-side components will be removed, and replaced with
-  specialized data transformation tools.
+* Python tests: :code:`tox -epy27`
+* JavaScript unit tests: :code:`gulp unit`
+* JavaScript E2E tests: :code:`gulp e2e`
 
-  - Data sources and processing: `stackviz` Python project, with
-   `stackviz-export` used to generate JSON data files and configuration.
-
-  - Web interface:
-
-    - Will remain in this namespace (:code:`openstack-qa/stackviz`).
-    - Will decouple data processing from build process, allowing for
-      distribution to nodes as a prebuilt static site.
-    - Data sources will be configured in a :code:`config.json`.
-    - Will support local and remote sources via REST/JSONP (pending API spec).
-
-- Upstream Implementation: https://etherpad.openstack.org/p/BKgWlKIjgQ
+Roadmap and Planning
+====================
+- Planning: https://etherpad.openstack.org/p/stackviz
+- Gate integration planning: https://etherpad.openstack.org/p/BKgWlKIjgQ
