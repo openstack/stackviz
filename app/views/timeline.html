@@ -17,20 +17,10 @@
     </div>
     <div class="row" ng-if="!timeline.error">
         <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Timeline</h3>
-                </div>
-                <timeline class="panel-body"
-                          dataset="timeline.dataset"
-                          hovered-item="timeline.hoveredItem"
-                          selected-item="timeline.selectedItem"
-                          preselect="timeline.preselect">
-                    <timeline-viewport></timeline-viewport>
-                    <timeline-dstat></timeline-dstat>
-                    <timeline-overview></timeline-overview>
-                </timeline>
-            </div>
+            <timeline dataset="timeline.dataset"
+                      hovered-item="timeline.hoveredItem"
+                      selected-item="timeline.selectedItem"
+                      preselect="timeline.preselect"></timeline>
         </div>
     </div>
     <div class="row">

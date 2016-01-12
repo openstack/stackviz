@@ -1,0 +1,28 @@
+timeline-search {
+    display: inline-block;
+
+    .popover {
+        max-width: 500px;
+
+        .timeline-search-popover {
+            width: 300px;
+            .input-group {
+                width: 100%;
+            }
+
+            .status-group label {
+                font-family: monospace;
+            }
+
+            .jump-group li {
+                cursor: pointer;
+            }
+
+            .jump-group ul {
+                max-height: 20em;
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+        }
+    }
+}

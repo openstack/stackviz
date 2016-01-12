@@ -1,0 +1,38 @@
+<div class="timeline-search-popover">
+    <label>Filter by name:</label>
+    <div class="input-group">
+        <span class="input-group-addon"><fa name="search"></fa></span>
+        <input type="text"
+               placeholder="query..."
+               class="form-control"
+               ng-model="search.query"
+               ng-model-options="{debounce: 250}">
+    </div>
+    <br>
+
+    <label>Filter by status:</label>
+    <div class="status-group btn-group btn-group-justified">
+        <label uib-btn-checkbox
+               ng-model="search.showSuccess"
+               class="btn btn-default">success</label>
+        <label uib-btn-checkbox
+               ng-model="search.showSkip"
+               class="btn btn-default">skip</label>
+        <label uib-btn-checkbox
+               ng-model="search.showFail"
+               class="btn btn-default">fail</label>
+    </div>
+    <br>
+
+    <div class="jump-group">
+        <label>Jump to:</label>
+        <ul class="list-group">
+            <li ng-repeat="item in search.results"
+                class="list-group-item"
+                ng-class="item | contextClass:'list-group-item'"
+                ng-click="search.select(item)">
+                {{item.name | split:'.' | pickRight:1}}
+            </li>
+        </ul>
+    </div>
+</div>

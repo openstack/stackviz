@@ -9,6 +9,7 @@ function timelineOverview() {
     var margin = timelineController.margin;
     var height = 80;
     var laneHeight = 10;
+    var loaded = false;
 
     var x = timelineController.axes.x;
     var y = d3.scale.linear();
@@ -49,6 +50,17 @@ function timelineOverview() {
           .attr('stroke', 'rgba(100, 100, 100, 0.25)')
           .attr('fill', function(d) {
             return timelineController.statusColorMap[d.status];
+          })
+          .attr('class', function(d) {
+            if (timelineController.filterFunction) {
+              if (timelineController.filterFunction(d)) {
+                return 'filter-hit';
+              } else {
+                return 'filter-miss';
+              }
+            } else {
+              return null;
+            }
           });
 
       rects.exit().remove();
@@ -144,6 +156,8 @@ function timelineOverview() {
           .attr('height', height - 1);
 
       timelineController.setViewExtents(brush.extent());
+
+      loaded = true;
     });
 
     scope.$on('update', function() {
@@ -158,6 +172,13 @@ function timelineOverview() {
     scope.$on('select', function(event, selection) {
       if (selection) {
         shiftViewport(selection.item);
+      }
+    });
+
+    scope.$on('filter', function() {
+      if (loaded) {
+        console.log('filtering');
+        updateItems(timelineController.data);
       }
     });
   };

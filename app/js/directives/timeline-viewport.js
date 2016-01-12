@@ -202,6 +202,17 @@ function timelineViewport($document) {
               return null;
             }
           })
+          .attr('class', function(d) {
+            if (timelineController.filterFunction) {
+              if (timelineController.filterFunction(d)) {
+                return 'filter-hit';
+              } else {
+                return 'filter-miss';
+              }
+            } else {
+              return null;
+            }
+          })
           .on("mouseover", rectMouseOver)
           .on('mouseout', rectMouseOut)
           .on('click', rectClick);
@@ -309,6 +320,12 @@ function timelineViewport($document) {
         });
       } else {
         select(null);
+      }
+    });
+
+    scope.$on('filter', function() {
+      if (loaded) {
+        update();
       }
     });
   };
