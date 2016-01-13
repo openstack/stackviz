@@ -56,6 +56,7 @@ function timeline($log, datasetService) {
     self.selectionName = null;
     self.selection = null;
     self.hover = null;
+    self.filterFunction = null;
 
     self.setViewExtents = function(extents) {
       if (angular.isNumber(extents[0])) {
@@ -102,6 +103,12 @@ function timeline($log, datasetService) {
       // sequence
       $scope.$broadcast('select', self.selection);
       $scope.$broadcast('postSelect', self.selection);
+    };
+
+    self.setFilterFunction = function(fn) {
+      self.filterFunction = fn;
+
+      $scope.$broadcast('filter', fn);
     };
 
     self.selectItem = function(item) {
@@ -249,9 +256,14 @@ function timeline($log, datasetService) {
 
   var link = function(scope, el, attrs, ctrl) {
     var updateWidth = function() {
-      ctrl.width = el.parent()[0].clientWidth -
+      var body = el[0].querySelector('div.panel div.panel-body');
+      var style = getComputedStyle(body);
+
+      ctrl.width = body.clientWidth -
           ctrl.margin.left -
-          ctrl.margin.right;
+          ctrl.margin.right -
+          parseFloat(style.paddingLeft) -
+          parseFloat(style.paddingRight);
     };
 
     scope.$on('windowResize', updateWidth);
@@ -276,7 +288,7 @@ function timeline($log, datasetService) {
     controllerAs: 'timeline',
     restrict: 'EA',
     transclude: true,
-    template: '<ng-transclude></ng-transclude>',
+    templateUrl: 'directives/timeline.html',
     scope: {
       'dataset': '=',
       'hoveredItem': '=',

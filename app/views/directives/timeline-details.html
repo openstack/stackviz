@@ -9,16 +9,13 @@
 
 <div ng-if="!!item"
      class="panel"
-     ng-class="{'panel-success': item.status == 'success', 'panel-info': item.status == 'skip', 'panel-danger': item.status == 'fail'}">
+     ng-class="item | contextClass:'panel'">
     <div class="panel-heading">
         <h3 class="panel-title">
             Details: {{item.name | split:'.' | pickRight:1}}
-            <span class="label label-success"
-                  ng-if="item.status == 'success'">success</span>
-            <span class="label label-info"
-                  ng-if="item.status == 'skip'">skip</span>
-            <span class="label label-danger"
-                  ng-if="item.status == 'fail'">fail</span>
+            <span class="label label-{{item | contextClass}}">
+                {{item.status}}
+            </span>
         </h3>
     </div>
     <table class="table table-bordered table-hover table-striped">
