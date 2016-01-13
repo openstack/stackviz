@@ -1,4 +1,23 @@
 timeline-viewport svg {
+    .axis {
+        shape-rendering: crispEdges;
+
+        path {
+            fill: none;
+            stroke: lightgray;
+        }
+
+        line {
+            fill: none;
+            stroke: lightgray;
+        }
+
+        text {
+            font: 9px sans-serif;
+            fill: #888;
+        }
+    }
+
     .filter-hit {
 
     }

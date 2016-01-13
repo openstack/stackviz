@@ -61,6 +61,19 @@ function timelineViewport($document) {
         .style('font', '12px sans-serif')
         .style('font-weight', 'bold');
 
+    var format = d3.time.format('%H:%M');
+    var axis = d3.svg.axis()
+        .scale(xSelected)
+        .tickSize(5)
+        .tickFormat(function(f) { return format(new Date(f)); })
+        .orient('bottom');
+
+    var axisGroup = chart.append('g')
+        .attr('class', 'axis')
+        .attr('transform', 'translate(' + margin.left + ',' + (height + margin.top) + ')')
+        .attr('clip-path', 'url(#clip)')
+        .call(axis);
+
     var selectedRect = null;
 
     var color = function(rect, color) {
@@ -223,6 +236,8 @@ function timelineViewport($document) {
     var update = function(data) {
       updateItems(timelineController.data);
       updateLanes(timelineController.data);
+
+      axisGroup.call(axis);
     };
 
     var select = function(rect) {

@@ -42,7 +42,7 @@ function timeline($log, datasetService) {
     self.dataRaw = [];
     self.dstat = [];
 
-    self.margin = { top: 40, right: 10, bottom: 10, left: 80 };
+    self.margin = { top: 40, right: 10, bottom: 20, left: 80 };
     self.width = 0;
     self.height = 550 - this.margin.top - this.margin.bottom;
 
