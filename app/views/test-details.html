@@ -10,7 +10,8 @@
       <div class="panel panel-default">
           <div class="panel-heading">
               <h3 class="panel-title">
-                   {{testDetails.testName | split:'.' | slice:-2 | join:'.'}}
+                {{testName | split:'.' | slice:-2 | join:'.'}}
+                <test-details-search class="pull-right"></test-details-search>
               </h3>
           </div>
 
@@ -20,26 +21,26 @@
                 <table class="table table-bordered table-hover table-striped">
                     <tr>
                         <td>Name</td>
-                        <td>{{testDetails.item.name | split:'.' | pickRight:1}}</td>
+                        <td>{{item.name | split:'.' | pickRight:1}}</td>
                     <tr>
                         <td>Full Name</td>
-                        <td>{{testDetails.item.name}}</td>
+                        <td>{{item.name}}</td>
                     </tr>
                     <tr>
                         <td>Status</td>
-                        <td>{{testDetails.item.status}}</td>
+                        <td>{{item.status}}</td>
                     </tr>
                     <tr>
                         <td>Tags</td>
-                        <td>{{testDetails.item.tags | join:', '}}</td>
+                        <td>{{item.tags | join:', '}}</td>
                     </tr>
                     <tr>
                         <td>Duration</td>
-                        <td>{{testDetails.item.duration | number:1}} seconds</td>
+                        <td>{{item.duration | number:1}} seconds</td>
                     </tr>
                 </table>
               </uib-tab>
-              <uib-tab ng-repeat="(entry,log) in testDetails.itemDetails" heading="{{entry}}">
+              <uib-tab ng-repeat="(entry,log) in itemDetails" heading="{{entry}}">
                 <pre style="height: 400px; overflow-y: scroll;">{{log}}</pre>
               </uib-tab>
             </uib-tabset>
@@ -47,7 +48,7 @@
 
           <div class="panel-footer clearfix">
             <a class="btn btn-default pull-right"
-               ui-sref="timeline({datasetId: testDetails.dataset.id, test: testDetails.item.name})">
+               ui-sref="timeline({datasetId: dataset.id, test: item.name})">
                 Timeline
             </a>
           </div>
