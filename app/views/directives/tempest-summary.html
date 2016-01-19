@@ -49,8 +49,8 @@
             <h4 class="list-group-item-heading">
                 {{fail.name | split:'.' | slice:-2 | join:'.'}}
             </h4>
-            <p class="list-group-item-text">
-                {{fail.details}}
+            <p ng-repeat="line in fail.details" class="list-group-item-text">
+                {{line}}
             </p>
         </a>
     </ul>

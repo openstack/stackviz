@@ -96,7 +96,9 @@ def get_stats(stream):
             # of the traceback
             msg = None
             if 'traceback' in entry['details']:
-                msg = entry['details']['traceback'].strip().splitlines()[-1]
+                msg = entry['details']['traceback'].strip().splitlines()[-2:]
+                if 'Details' not in msg[1]:
+                    msg.remove(msg[0])
 
             failures.append({
                 'name': entry['name'],
