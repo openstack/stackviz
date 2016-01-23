@@ -29,7 +29,7 @@ var parseWorker = function(tags) {
 /**
  * @ngInject
  */
-function timeline($log, datasetService) {
+function timeline($log, datasetService, progressService) {
 
   /**
    * @ngInject
@@ -227,20 +227,25 @@ function timeline($log, datasetService) {
         return;
       }
 
+      progressService.start({ parent: 'timeline .panel-body' });
+
       // load dataset details (raw log entries and dstat) sequentially
       // we need to determine the initial date from the subunit data to parse
       // dstat
       datasetService.raw(dataset).then(function(response) {
+        progressService.set(0.33);
         initData(response.data);
 
         return datasetService.dstat(dataset);
       }).then(function(response) {
+        progressService.set(0.66);
         var firstDate = new Date(self.dataRaw[0].timestamps[0]);
 
         var raw = parseDstat(response.data, firstDate.getYear());
         initDstat(raw);
 
         $scope.$broadcast('update');
+        progressService.done();
       }).catch(function(ex) {
         $log.error(ex);
       });

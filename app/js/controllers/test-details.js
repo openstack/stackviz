@@ -5,12 +5,14 @@ var controllersModule = require('./_index');
 /**
  * @ngInject
  */
-function TestDetailsCtrl($scope, $location, $stateParams, datasetService) {
+function TestDetailsCtrl($scope, $location, $stateParams, datasetService, progressService) {
    // ViewModel
   var vm = this;
   $scope.datasetId = $stateParams.datasetId;
   var testName = $stateParams.test;
   $scope.testName = testName;
+
+  progressService.start({ parent: 'div[role="main"] .panel-body' });
 
   // load dataset, raw json, and details json
   datasetService.get($stateParams.datasetId).then(function(response) {
@@ -24,18 +26,25 @@ function TestDetailsCtrl($scope, $location, $stateParams, datasetService) {
         }
       }
       $scope.item = item;
+
+      progressService.inc();
     }).catch(function(ex) {
       $log.error(ex);
+      progressService.done();
     });
     datasetService.details(response).then(function(deets) {
       $scope.details = deets;
       $scope.originalDetails = angular.copy(deets.data[testName]);
       $scope.itemDetails = deets.data[testName];
+
+      progressService.done();
     }).catch(function(ex) {
       $log.error(ex);
+      progressService.done();
     });
   }).catch(function(ex) {
     $log.error(ex);
+    progressService.done();
   });
 
   $scope.parsePythonLogging = function(showINFO, showDEBUG, showWARNING, showERROR) {
