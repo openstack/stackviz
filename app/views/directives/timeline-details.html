@@ -16,6 +16,11 @@
             <span class="label label-{{item | contextClass}}">
                 {{item.status}}
             </span>
+            &nbsp;
+            <span class="label label-default"
+                  ng-if="item.hidden">
+                hidden
+            </span>
         </h3>
     </div>
     <table class="table table-bordered table-hover table-striped">
@@ -41,6 +46,12 @@
         <tr>
             <td>End</td>
             <td>{{item.endDate | date:'medium'}}</td>
+        </tr>
+        <tr ng-if="item.hidden" class="warning text-center">
+            <td colspan="2">
+                <fa name="exclamation-triangle"></fa>
+                This test executed too quickly to be visible above.
+            </td>
         </tr>
     </table>
     <div class="panel-footer clearfix">

@@ -86,7 +86,7 @@ function timelineViewport($document) {
 
     var uncolor = function(rect) {
       if (!$document[0].contains(rect[0][0])) {
-        // we load the original colored rect so we can't unset its color,
+        // we lost the original colored rect so we can't unset its color,
         // force a full reload
         updateItems(timelineController.data);
         return;
@@ -166,7 +166,7 @@ function timelineViewport($document) {
         return {
           key: group.key,
           values: group.values.filter(function(e) {
-            if (xSelected(e.endDate) - xSelected(e.startDate) < 2) {
+            if (timelineController.hidden(e)) {
               return false;
             }
 
@@ -324,12 +324,18 @@ function timelineViewport($document) {
 
     scope.$on('postSelect', function(event, selection) {
       if (selection) {
-        // iterate over all rects to find match
-        itemGroups.selectAll('rect').each(function(d) {
-          if (d.name === selection.item.name) {
-            select(d3.select(this));
+        if (timelineController.hidden(selection.item)) {
+          if (selectedRect) {
+            uncolor(selectedRect);
           }
-        });
+        } else {
+          // iterate over all rects to find match
+          itemGroups.selectAll('rect').each(function(d) {
+            if (d.name === selection.item.name) {
+              select(d3.select(this));
+            }
+          });
+        }
       } else {
         select(null);
       }

@@ -163,6 +163,15 @@ function timeline($log, datasetService, progressService) {
       return false;
     };
 
+    self.hidden = function(item) {
+      var width = self.axes.selection(item.endDate) -
+          self.axes.selection(item.startDate);
+      var hidden = width < 2;
+      item.hidden = hidden;
+
+      return hidden;
+    };
+
     var initData = function(raw) {
       self.dataRaw = raw;
 
