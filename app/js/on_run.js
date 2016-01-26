@@ -21,4 +21,5 @@ function OnRun($rootScope, AppSettings) {
 
 }
 
+OnRun.$inject = ['$rootScope','AppSettings'];
 module.exports = OnRun;

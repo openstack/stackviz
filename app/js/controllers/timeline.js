@@ -34,4 +34,4 @@ function TimelineCtrl($scope, $location, $stateParams, datasetService) {
 
 }
 
-controllersModule.controller('TimelineCtrl', TimelineCtrl);
+controllersModule.controller('TimelineController', TimelineCtrl);

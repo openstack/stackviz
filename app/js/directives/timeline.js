@@ -20,7 +20,7 @@ var parseWorker = function(tags) {
       continue;
     }
 
-    return parseInt(tags[i].split('-')[1]);
+    return parseInt(tags[i].split('-')[1], 10);
   }
 
   return null;
@@ -286,10 +286,10 @@ function timeline($log, datasetService, progressService) {
     d3.select(window)
       .on("keydown", function() {
         var code = d3.event.keyCode;
-        if (code == 37) {
+        if (code === 37) {
           ctrl.selectPreviousItem();
         }
-        else if (code == 39) {
+        if (code === 39) {
           ctrl.selectNextItem();
         }
         scope.$apply();

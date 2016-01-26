@@ -1,7 +1,8 @@
+'use strict';
+
 var d3 = require("d3");
 
 var fillArrayRight = function(array) {
-  "use strict";
 
   // "fill" the array to the right, overwriting empty values with the next
   // non-empty value to the left
@@ -14,7 +15,6 @@ var fillArrayRight = function(array) {
 };
 
 var mergeNames = function(primary, secondary) {
-  "use strict";
 
   // "zip" together strings in the same position in each array, and do some
   // basic cleanup of results
@@ -26,7 +26,6 @@ var mergeNames = function(primary, secondary) {
 };
 
 var parseDstat = function(data, year) {
-  "use strict";
 
   var primaryNames = null;
   var secondaryNames = null;

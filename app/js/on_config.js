@@ -8,14 +8,14 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider) {
   $stateProvider.state('home', {
     url: '/{datasetId:int}',
     params: { datasetId: 0 },
-    controller: 'HomeCtrl as home',
+    controller: 'HomeController as home',
     templateUrl: 'home.html',
     title: 'Home'
   });
 
   $stateProvider.state('timeline', {
     url: '/{datasetId:int}/timeline?test',
-    controller: 'TimelineCtrl as timeline',
+    controller: 'TimelineController as timeline',
     templateUrl: 'timeline.html',
     reloadOnSearch: false,
     title: 'Timeline'
@@ -23,7 +23,8 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider) {
 
   $stateProvider.state('testDetails', {
     url: '/{datasetId:int}/test-details/{test}',
-    controller: 'TestDetailsCtrl as testDetails',
+    controller: 'TestDetailsController',
+    controllerAs: 'testDetails',
     templateUrl: 'test-details.html',
     title: 'Test Details'
   });
@@ -32,4 +33,5 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider) {
 
 }
 
+OnConfig.$inject = ['$stateProvider','$locationProvider','$urlRouterProvider'];
 module.exports = OnConfig;

@@ -20,7 +20,8 @@ function DatasetService($q, $http) {
   service.get = function(id) {
     return $q(function(resolve, reject) {
       service.list().then(function(response) {
-        for (let entry of response.data.tempest) {
+        for (var i in response.data.tempest) {
+          var entry = response.data.tempest[i];
           if (entry.id === id) {
             resolve(entry);
             return;

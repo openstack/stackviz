@@ -1,5 +1,6 @@
+"use strict";
+
 var binaryMinIndex = function(min, array, func) {
-  "use strict";
 
   var left = 0;
   var right = array.length - 1;
@@ -26,7 +27,6 @@ var binaryMinIndex = function(min, array, func) {
 };
 
 var binaryMaxIndex = function(max, array, func) {
-  "use strict";
 
   var left = 0;
   var right = array.length - 1;
