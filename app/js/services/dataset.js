@@ -59,10 +59,17 @@ function DatasetService($q, $http) {
   };
 
   service.dstat = function(dataset) {
-    return $http({
-      cache: true,
-      url: "data/" + dataset.dstat,
-      method: 'GET'
+    return $q(function(resolve, reject) {
+      if (!dataset.dstat) {
+        reject({ status: -1, statusText: 'Dstat not available for dataset.' });
+        return;
+      }
+
+      resolve($http({
+        cache: true,
+        url: "data/" + dataset.dstat,
+        method: 'GET'
+      }));
     });
   };
 

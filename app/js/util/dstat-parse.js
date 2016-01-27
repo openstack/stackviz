@@ -41,7 +41,13 @@ var parseDstat = function(data, year) {
   var dateFormat = d3.time.format.utc("%d-%m %H:%M:%S");
 
   var parsed = d3.csv.parseRows(data, function(row, i) {
-    if (i <= 4) { // header rows - ignore
+    if (i === 0) {
+      if (row.length !== 1 ||
+          !row[0].startsWith('Dstat') ||
+          !row[0].endsWith('CSV output')) {
+        throw new Error('Invalid Dstat CSV');
+      }
+    } else if (i <= 4) { // header rows - ignore
       return null;
     } else if (i === 5) { // primary
       primaryNames = row;

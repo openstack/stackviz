@@ -252,11 +252,11 @@ function timeline($log, datasetService, progressService) {
 
         var raw = parseDstat(response.data, firstDate.getYear());
         initDstat(raw);
-
+      }).catch(function(ex) {
+        $log.warn(ex);
+      }).finally(function() {
         $scope.$broadcast('update');
         progressService.done();
-      }).catch(function(ex) {
-        $log.error(ex);
       });
     });
 

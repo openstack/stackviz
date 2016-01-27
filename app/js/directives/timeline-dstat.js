@@ -85,7 +85,8 @@ function timelineDstat() {
     var chart = d3.select(el[0])
         .append('svg')
         .attr('width', timelineController.width + margin.left + margin.right)
-        .attr('height', height);
+        .attr('height', height)
+        .style('display', 'none');
 
     var main = chart.append('g')
         .attr('transform', 'translate(' + margin.left + ',0)');
@@ -177,6 +178,8 @@ function timelineDstat() {
       y.domain([0, lanes.length]).range([0, height]);
 
       lanes.forEach(initLane);
+
+      chart.style('display', 'block');
     });
 
     scope.$on('update', function() {
