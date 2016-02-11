@@ -102,8 +102,8 @@ function timelineViewport($document) {
       timelineController.setHover(d);
       scope.$apply();
 
-      if (!timelineController.selection
-          || d !== timelineController.selection.item) {
+      if (!timelineController.selection ||
+          d !== timelineController.selection.item) {
         color(d3.select(this), statusColorMap.hover);
       }
     };
@@ -112,8 +112,8 @@ function timelineViewport($document) {
       timelineController.clearHover();
       scope.$apply();
 
-      if (!timelineController.selection
-          || d !== timelineController.selection.item) {
+      if (!timelineController.selection ||
+          d !== timelineController.selection.item) {
         var self = d3.select(this);
         uncolor(d3.select(this));
       }

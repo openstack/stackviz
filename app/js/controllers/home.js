@@ -26,4 +26,4 @@ function HomeCtrl($scope, $state, datasetService) {
 
 }
 
-controllersModule.controller('HomeCtrl', HomeCtrl);
+controllersModule.controller('HomeController', HomeCtrl);

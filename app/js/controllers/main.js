@@ -12,4 +12,4 @@ function MainCtrl($window, $scope) {
   });
 }
 
-controllersModule.controller('MainCtrl', MainCtrl);
+controllersModule.controller('MainController', MainCtrl);

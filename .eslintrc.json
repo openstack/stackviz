@@ -1,0 +1,25 @@
+{
+  "extends" : "openstack",
+
+  "globals" : {
+    "angular": false,
+    "module": false
+  },
+
+  "env" : {
+    "browser": true,
+    "jasmine": true
+  },
+
+  "rules" : {
+    "module-setter": 0,
+    "strict": [2,"global"],
+    "valid-jsdoc": 0,
+    "brace-style": [2, "1tbs", { "allowSingleLine": true }],
+    "no-extra-parens": [2, "functions"],
+    "complexity": 0,
+    "no-unused-vars": 0,
+    "guard-for-in": 0
+  }
+
+}

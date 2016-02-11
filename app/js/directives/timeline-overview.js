@@ -178,7 +178,6 @@ function timelineOverview() {
 
     scope.$on('filter', function() {
       if (loaded) {
-        console.log('filtering');
         updateItems(timelineController.data);
       }
     });

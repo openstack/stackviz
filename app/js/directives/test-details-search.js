@@ -19,8 +19,7 @@ function testDetailsSearch() {
     this.showERROR = true;
 
     var update = function() {
-      $scope.$parent
-            .parsePythonLogging(self.showINFO, self.showDEBUG, self.showWARNING, self.showERROR);
+      $scope.filter(self.showINFO, self.showDEBUG, self.showWARNING, self.showERROR);
     };
 
     $scope.$watch(function() { return self.query; }, update);
@@ -32,9 +31,9 @@ function testDetailsSearch() {
 
   return {
     restrict: 'EA',
-    require: ['^testDetailsSearch', '^testDetails'],
+    require: ['^testDetailsSearch','^testDetails'],
     scope: {
-      'parsePythonLogging': '&'
+      'filter': '='
     },
     controller: controller,
     controllerAs: 'search',
