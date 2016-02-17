@@ -378,6 +378,9 @@ function timeline($window, $log, datasetService, progressService) {
       var accessor = function(d) { return d.system_time; };
       var minIndex = arrayUtil.binaryMinIndex(min, raw.entries, accessor);
       var maxIndex = arrayUtil.binaryMaxIndex(max, raw.entries, accessor);
+      if (minIndex < 0) {
+        minIndex = 0;
+      }
 
       self.dstat = {
         entries: raw.entries.slice(minIndex, maxIndex),
@@ -388,8 +391,8 @@ function timeline($window, $log, datasetService, progressService) {
       $scope.$broadcast('dstatLoaded', self.dstat);
     };
 
-    $scope.$watch('dataset', function(dataset) {
-      if (!dataset) {
+    $scope.$watch('artifactName', function(artifactName) {
+      if (!artifactName) {
         return;
       }
 
@@ -398,11 +401,11 @@ function timeline($window, $log, datasetService, progressService) {
       // load dataset details (raw log entries and dstat) sequentially
       // we need to determine the initial date from the subunit data to parse
       // dstat
-      datasetService.raw(dataset).then(function(response) {
+      datasetService.artifact(artifactName, 'subunit').then(function(response) {
         progressService.set(0.33);
         initData(response.data);
 
-        return datasetService.dstat(dataset);
+        return datasetService.artifact('dstat');
       }).then(function(response) {
         progressService.set(0.66);
         var firstDate = new Date(self.dataRaw[0].timestamps[0]);
@@ -462,7 +465,7 @@ function timeline($window, $log, datasetService, progressService) {
     transclude: true,
     templateUrl: 'directives/timeline.html',
     scope: {
-      'dataset': '=',
+      'artifactName': '=',
       'hoveredItem': '=',
       'selectedItem': '=',
       'preselect': '='

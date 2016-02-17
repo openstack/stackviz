@@ -3,88 +3,90 @@
 var controllersModule = require('./_index');
 
 /**
- * @ngInject
- */
-var TestDetailsCtrl =
-/**
  * Responsible for making three calls to the dataset service. First, the
  * dataset corresponding to the given int id is loaded, then the raw and details
  * JSON files are loaded and placed into state variables. Also note that a copy
  * of the details JSON is kept in `originalDetails` so that information is not
  * lost when parsing. Progress of the dataset service calls is recorded and
  * displayed in a progress bar on `test-details.html`.
-*/
-function($scope, $location, $stateParams, $log, datasetService, progressService) {
+ * @ngInject
+ */
+function TestDetailsCtrl(
+    $scope, $location, $stateParams, $log, $q,
+    datasetService, progressService) {
   var vm = this;
-  vm.datasetId = $stateParams.datasetId;
-  var testName = $stateParams.test;
-  vm.testName = testName;
+  vm.artifactName = $stateParams.artifactName;
+  vm.testName = $stateParams.test;
 
   progressService.start({ parent: 'div[role="main"] .panel-body' });
 
   // load dataset, raw json, and details json
-  datasetService.get($stateParams.datasetId)
-    .then(function(response) {
-      vm.dataset = response;
-      vm.stats = response.stats;
-      return datasetService.raw(response);
-    })
-    .then(function(raw) {
-      var item = null;
-      for (var t in raw.data) {
-        if (raw.data[t].name === testName) {
-          item = raw.data[t];
-        }
-      }
-      vm.item = item;
-      progressService.inc();
-      return datasetService.details(vm.dataset);
-    })
-    .then(function(deets) {
-      vm.details = deets;
-      vm.originalDetails = angular.copy(deets.data[testName]);
-      vm.itemDetails = deets.data[testName];
-      progressService.done();
-    })
-    .catch(function(error) {
-      $log.error(error);
-      progressService.done();
-    });
+  var statsArtifact = datasetService.artifact(vm.artifactName, 'subunit-stats');
+  var subunitArtifact = datasetService.artifact(vm.artifactName, 'subunit');
+  var detailsArtifact = datasetService.artifact(vm.artifactName, 'subunit-details');
 
-  vm.parsePythonLogging =
+  var statsPromise = statsArtifact.then(function(response) {
+    vm.stats = response.data;
+  });
+
+  var subunitPromise = subunitArtifact.then(function(response) {
+    var item = null;
+    for (var t in response.data) {
+      if (response.data[t].name === vm.testName) {
+        item = response.data[t];
+      }
+    }
+    vm.item = item;
+    progressService.inc();
+  });
+
+  var detailsPromise = detailsArtifact.then(function(details) {
+    vm.details = details;
+    vm.originalDetails = angular.copy(details.data[vm.testName]);
+    vm.itemDetails = details.data[vm.testName];
+  }).catch(function(ex) {
+    // ignore errors, details won't exist for deployer
+  });
+
+  $q.all([statsPromise, subunitPromise, detailsPromise]).catch(function(ex) {
+    $log.error(ex);
+  }).finally(function() {
+    progressService.done();
+  });
+
   /**
    * This function changes the `itemDetails.pythonlogging` variable to only
    * show lines with the log levels specified by the four boolean parameters.
-   * EX: If the `showINFO` parameter is set to true, `itemDetails.pythonlogging`
+   * EX: If the `info` parameter is set to true, `itemDetails.pythonlogging`
    * will display lines that contain the text `INFO`.
-   * @param {boolean} showINFO
-   * @param {boolean} showDEBUG
-   * @param {boolean} showWARNING
-   * @param {boolean} showERROR
+   * @param {boolean} info
+   * @param {boolean} debug
+   * @param {boolean} warning
+   * @param {boolean} error
    */
-  function(showINFO, showDEBUG, showWARNING, showERROR) {
+  vm.parsePythonLogging = function(info, debug, warning, error) {
     if (vm.originalDetails && vm.originalDetails.pythonlogging) {
       var log = vm.originalDetails.pythonlogging;
       var ret = [];
       var lines = log.split('\n');
       for (var i in lines) {
         var line = lines[i];
-        if (showINFO && line.includes("INFO")) {
+        if (info && line.includes("INFO")) {
           ret.push(line);
         }
-        if (showDEBUG && line.includes("DEBUG")) {
+        if (debug && line.includes("DEBUG")) {
           ret.push(line);
         }
-        if (showWARNING && line.includes("WARNING")) {
+        if (warning && line.includes("WARNING")) {
           ret.push(line);
         }
-        if (showERROR && line.includes("ERROR")) {
+        if (error && line.includes("ERROR")) {
           ret.push(line);
         }
       }
       vm.itemDetails.pythonlogging = ret.join('\n');
     }
   };
+}
 
-};
 controllersModule.controller('TestDetailsController', TestDetailsCtrl);

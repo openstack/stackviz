@@ -21,12 +21,31 @@ import os
 import shutil
 
 from argparse import ArgumentParser
-from functools import partial
 
 from stackviz.parser import tempest_subunit
 
 _base = os.path.dirname(os.path.abspath(__file__))
-_tempest_count = 0
+
+
+def environment_params():
+    r = {}
+
+    if 'ZUUL_PROJECT' in os.environ:
+        r['change_project'] = os.environ['ZUUL_PROJECT']
+
+    if 'ZUUL_CHANGE' in os.environ:
+        r['change_id'] = os.environ['ZUUL_CHANGE']
+
+    if 'ZUUL_PATCHSET' in os.environ:
+        r['revision'] = os.environ['ZUUL_PATCHSET']
+
+    if 'ZUUL_PIPELINE' in os.environ:
+        r['pipeline'] = os.environ['ZUUL_PIPELINE']
+
+    if 'JOB_NAME' in os.environ:
+        r['name'] = os.environ['JOB_NAME']
+
+    return r
 
 
 def open_compressed(output_dir, file_name, compress):
@@ -46,40 +65,61 @@ def json_date_handler(object):
     return None
 
 
-def export_tempest_tree(stream, output_stream):
-    converted = tempest_subunit.convert_stream(stream, strip_details=True)
-    tree = tempest_subunit.reorganize(converted)
-    json.dump(tree, output_stream, default=json_date_handler)
-    output_stream.close()
+def build_artifact(path, artifact_name, artifact_type, content_type, primary,
+                   compress):
+    ret = {
+        'path': path,
+        'artifact_name': artifact_name,
+        'artifact_type': artifact_type,
+        'content_type': content_type,
+        'primary': primary
+    }
+
+    if compress:
+        ret['content_encoding'] = 'gzip'
+
+    return ret
 
 
-def export_tempest_raw(stream, output_stream):
-    converted = tempest_subunit.convert_stream(stream, strip_details=True)
-    json.dump(converted, output_stream, default=json_date_handler)
-    output_stream.close()
+def export_tempest_raw(name, subunit, output_dir, prefix, compress):
+    converted = tempest_subunit.convert_stream(subunit, strip_details=True)
+
+    stream, path = open_compressed(output_dir,
+                                   prefix + '-raw.json',
+                                   compress)
+    json.dump(converted, stream, default=json_date_handler)
+    stream.close()
+
+    return converted, build_artifact(path, name,
+                                     'subunit', 'application/json',
+                                     True, compress)
 
 
-def export_tempest_details(stream, output_stream):
-    converted = tempest_subunit.convert_stream(stream)
-
+def export_tempest_details(name, subunit, output_dir, prefix, compress):
+    converted = tempest_subunit.convert_stream(subunit, strip_details=False)
     output = {}
     for entry in converted:
         output[entry['name']] = entry['details']
 
-    json.dump(output, output_stream, default=json_date_handler)
-    output_stream.close()
+    stream, path = open_compressed(output_dir,
+                                   prefix + '-details.json',
+                                   compress)
+    json.dump(output, stream, default=json_date_handler)
+    stream.close()
+
+    return build_artifact(path, name,
+                          'subunit-details', 'application/json',
+                          False, compress)
 
 
-def get_stats(stream):
-    converted = tempest_subunit.convert_stream(stream, strip_details=False)
-
+def export_stats(name, subunit_parsed, output_dir, prefix, compress):
     start = None
     end = None
     total_duration = 0
     failures = []
     skips = []
 
-    for entry in converted:
+    for entry in subunit_parsed:
         # find min/max dates
         entry_start, entry_end = entry['timestamps']
         if start is None or entry_start < start:
@@ -112,56 +152,44 @@ def get_stats(stream):
                 'details': entry['details'].get('reason')
             })
 
-    return {
-        'count': len(converted),
+    stream, path = open_compressed(
+        output_dir, prefix + '-stats.json', compress)
+
+    json.dump({
+        'count': len(subunit_parsed),
         'start': start,
         'end': end,
         'total_duration': total_duration,
         'failures': failures,
         'skips': skips
-    }
+    }, stream, default=json_date_handler)
+    stream.close()
+
+    return build_artifact(path, name,
+                          'subunit-stats', 'application/json',
+                          False, compress)
 
 
-def export_tempest(provider, output_dir, dstat, compress):
-    global _tempest_count
-
+def export_tempest(provider, output_dir, compress):
     ret = []
 
     for i in range(provider.count):
-        path_base = 'tempest_%s_%d' % (provider.name, i)
-        if provider.count > 1:
-            name = '%s (%d)' % (provider.description, i)
-        else:
-            name = provider.description
+        prefix = '%s-%d' % (provider.name, i)
 
-        open_ = partial(open_compressed,
-                        output_dir=output_dir,
-                        compress=compress)
+        # convert and save raw (without details)
+        raw, artifact = export_tempest_raw(provider.name,
+                                           provider.get_stream(i),
+                                           output_dir, prefix, compress)
+        ret.append(artifact)
 
-        stream_raw, path_raw = open_(file_name=path_base + '_raw.json')
-        export_tempest_raw(provider.get_stream(i), stream_raw)
+        # convert and save details
+        ret.append(export_tempest_details(provider.name,
+                                          provider.get_stream(i),
+                                          output_dir, prefix, compress))
 
-        stream_tree, path_tree = open_(file_name=path_base + '_tree.json')
-        export_tempest_tree(provider.get_stream(i), stream_tree)
-
-        stream_details, path_details = open_(
-            file_name=path_base + '_details.json')
-        export_tempest_details(provider.get_stream(i), stream_details)
-
-        stats = get_stats(provider.get_stream(i))
-
-        entry = {
-            'id': _tempest_count,
-            'name': name,
-            'raw': path_raw,
-            'tree': path_tree,
-            'details': path_details,
-            'stats': stats
-        }
-        entry.update({'dstat': dstat} if dstat else {})
-
-        ret.append(entry)
-        _tempest_count += 1
+        # generate and save stats
+        ret.append(export_stats(provider.name, raw, output_dir, prefix,
+                                compress))
 
     return ret
 
@@ -170,7 +198,7 @@ def export_dstat(path, output_dir, compress):
     f = open(path, 'rb')
     out_stream, out_file = open_compressed(
         output_dir,
-        'dstat_log.csv',
+        'dstat.csv',
         compress)
 
     shutil.copyfileobj(f, out_stream)
@@ -178,7 +206,9 @@ def export_dstat(path, output_dir, compress):
     f.close()
     out_stream.close()
 
-    return out_file
+    return build_artifact(out_file, os.path.basename(path),
+                          'dstat', 'text/csv',
+                          False, compress)
 
 
 def main():
@@ -190,12 +220,15 @@ def main():
     parser.add_argument("-z", "--gzip",
                         help="Enable gzip compression for data files.",
                         action="store_true")
+    parser.add_argument("-e", "--env",
+                        help="Include Zuul metadata from environment "
+                             "variables.",
+                        action="store_true")
     parser.add_argument("-f", "--stream-file",
                         action="append",
                         help="Include the given direct subunit stream; can be "
                              "used multiple times.")
     parser.add_argument("-r", "--repository",
-                        action="append",
                         help="A directory containing a `.testrepository` to "
                              "include; can be used multiple times.")
     parser.add_argument("-i", "--stdin",
@@ -211,28 +244,42 @@ def main():
     if not os.path.exists(args.path):
         os.mkdir(args.path)
 
-    dstat = None
+    artifacts = []
+    dataset = {
+        'name': None,
+        'url': None,
+        'status': None,
+        'ci_username': None,
+        'pipeline': None,
+        'change_id': None,
+        'revision': None,
+        'change_project': None,
+        'change_subject': None,
+        'artifacts': artifacts
+    }
+
+    if args.env:
+        dataset.update(environment_params())
+
     if args.dstat:
         print("Exporting DStat log")
         dstat = export_dstat(args.dstat, args.path, args.gzip)
+        artifacts.append(dstat)
 
     providers = tempest_subunit.get_providers(
         args.repository,
         args.stream_file,
         args.stdin)
 
-    tempest_config_entries = []
-
     for provider in providers.values():
         print("Exporting Tempest provider: %s (%d)" % (provider.description,
                                                        provider.count))
-        tempest_config_entries.extend(
-            export_tempest(provider, args.path, dstat, args.gzip)
-        )
+        artifacts.extend(export_tempest(provider, args.path, args.gzip))
 
     with open(os.path.join(args.path, 'config.json'), 'w') as f:
         json.dump({
-            'tempest': tempest_config_entries
+            'deployer': False,
+            'datasets': [dataset]
         }, f, default=json_date_handler)
 
 

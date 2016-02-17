@@ -7,7 +7,7 @@ var parseDstat = require('../util/dstat-parse');
 var d3 = require('d3');
 
 var getDstatLanes = function(data, mins, maxes) {
-  if (!data) {
+  if (!data || !data.length) {
     return [];
   }
 
@@ -245,6 +245,10 @@ function timelineDstat($document, $window) {
         var bottom = y(laneIndex) + laneHeight;
 
         for (var pathIndex = 0; pathIndex < laneDef.length; pathIndex++) {
+          if (!region.data.length) {
+            continue;
+          }
+
           var pathDef = laneDef[pathIndex];
           var line = pathDef.type === 'line';
 

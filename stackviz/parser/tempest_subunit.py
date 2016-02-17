@@ -97,7 +97,7 @@ class RepositoryProvider(SubunitProvider):
 
     @property
     def name(self):
-        return "repo_%s" % os.path.basename(self.repository_path)
+        return os.path.basename(self.repository_path)
 
     @property
     def description(self):
@@ -120,7 +120,7 @@ class FileProvider(SubunitProvider):
 
     @property
     def name(self):
-        return "file_%s" % os.path.basename(self.path)
+        return os.path.basename(self.path)
 
     @property
     def description(self):

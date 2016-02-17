@@ -9,12 +9,7 @@ function TimelineCtrl($scope, $location, $stateParams, datasetService) {
 
   // ViewModel
   var vm = this;
-
-  datasetService.get($stateParams.datasetId).then(function(dataset) {
-    vm.dataset = dataset;
-  }, function(reason) {
-    vm.error = "Unable to load dataset: " + reason;
-  });
+  vm.artifactName = $stateParams.artifactName;
 
   vm.hoveredItem = null;
   vm.selectedItem = null;

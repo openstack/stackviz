@@ -6,15 +6,15 @@
 function OnConfig($stateProvider, $locationProvider, $urlRouterProvider) {
 
   $stateProvider.state('home', {
-    url: '/{datasetId:int}',
-    params: { datasetId: 0 },
+    url: '/{artifactName}',
+    params: { artifactName: null },
     controller: 'HomeController as home',
     templateUrl: 'home.html',
     title: 'Home'
   });
 
   $stateProvider.state('timeline', {
-    url: '/{datasetId:int}/timeline?test',
+    url: '/{artifactName}/timeline?test',
     controller: 'TimelineController as timeline',
     templateUrl: 'timeline.html',
     reloadOnSearch: false,
@@ -22,7 +22,7 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider) {
   });
 
   $stateProvider.state('testDetails', {
-    url: '/{datasetId:int}/test-details/{test}',
+    url: '/{artifactName}/test-details/{test}',
     controller: 'TestDetailsController',
     controllerAs: 'testDetails',
     templateUrl: 'test-details.html',

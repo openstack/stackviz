@@ -9,10 +9,14 @@ function HomeCtrl($scope, $state, datasetService) {
 
   // ViewModel
   var vm = this;
-  vm.focus = $state.params.datasetId;
+  vm.focus = $state.params.artifactName;
 
-  datasetService.list().then(function(response) {
-    vm.tempest = response.data.tempest;
+  datasetService.groups().then(function(groups) {
+    vm.groups = groups;
+
+    if (!vm.focus) {
+      vm.focus = groups[0];
+    }
   });
 
   // update the page url as the focus id changes, but don't reload
@@ -20,7 +24,7 @@ function HomeCtrl($scope, $state, datasetService) {
     return vm.focus;
   }, function(value, old) {
     if (value !== old) {
-      $state.go('home', { datasetId: value }, { notify: false });
+      $state.go('home', { artifactName: value }, { notify: false });
     }
   });
 

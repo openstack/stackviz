@@ -6,18 +6,20 @@
 </header>
 
 <div class="container">
-    <div class="row" ng-if="!home.tempest.length">
+    <div class="row" ng-if="!home.groups.length">
         <div class="col-lg-12">
             <div class="alert alert-danger">
                 No tempest datasets could be loaded!
             </div>
         </div>
     </div>
-    <div class="row" ng-if="!!home.tempest.length">
+    <div class="row" ng-if="!!home.groups.length">
         <div class="col-lg-8">
-            <tempest-summary ng-if="home.tempest.length >= 1" dataset="home.tempest[home.focus]"></tempest-summary>
+            <tempest-summary ng-if="home.groups.length >= 1"
+                             artifact-name="home.focus"
+                             index="home.focus"></tempest-summary>
         </div>
-        <div class="col-lg-4" ng-if="home.tempest.length > 1">
+        <div class="col-lg-4" ng-if="home.datasets.length > 1">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Additional Datasets</h3>
@@ -25,18 +27,18 @@
 
                 <ul class="list-group">
                     <li class="list-group-item"
-                        ng-repeat="dataset in home.tempest"
-                        ng-if="$index != home.focus"
-                        ng-click="home.focus = $index"
+                        ng-repeat="group in home.groups"
+                        ng-if="group != home.focus"
+                        ng-click="home.focus = group"
                         style="cursor: pointer">
-                        {{ dataset.name }}
+                        {{ group }}
 
-                        <small class="text-muted" style="font-size: 75%">
+                        <!--<small class="text-muted" style="font-size: 75%">
                             {{dataset.stats.start | date:'MM/d/yyyy'}}
-                        </small>
+                        </small>-->
 
                         <a class="btn btn-default btn-xs pull-right"
-                           ui-sref="timeline({datasetId: dataset.id})">
+                           ui-sref="timeline({artifactName: group})">
                             Details
                         </a>
                     </li>
