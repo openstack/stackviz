@@ -5,7 +5,8 @@ var controllersModule = require('./_index');
 /**
  * @ngInject
  */
-var TestDetailsCtrl = function($scope, $location, $stateParams, datasetService, progressService) {
+var TestDetailsCtrl =
+function($scope, $location, $stateParams, $log, datasetService, progressService) {
   var vm = this;
   vm.datasetId = $stateParams.datasetId;
   var testName = $stateParams.test;
@@ -14,10 +15,13 @@ var TestDetailsCtrl = function($scope, $location, $stateParams, datasetService, 
   progressService.start({ parent: 'div[role="main"] .panel-body' });
 
   // load dataset, raw json, and details json
-  datasetService.get($stateParams.datasetId).then(function(response) {
-    vm.dataset = response;
-    vm.stats = response.stats;
-    datasetService.raw(response).then(function(raw) {
+  datasetService.get($stateParams.datasetId)
+    .then(function(response) {
+      vm.dataset = response;
+      vm.stats = response.stats;
+      return datasetService.raw(response);
+    })
+    .then(function(raw) {
       var item = null;
       for (var t in raw.data) {
         if (raw.data[t].name === testName) {
@@ -25,26 +29,19 @@ var TestDetailsCtrl = function($scope, $location, $stateParams, datasetService, 
         }
       }
       vm.item = item;
-
       progressService.inc();
-    }).catch(function(ex) {
-      $log.error(ex);
-      progressService.done();
-    });
-    datasetService.details(response).then(function(deets) {
+      return datasetService.details(vm.dataset);
+    })
+    .then(function(deets) {
       vm.details = deets;
       vm.originalDetails = angular.copy(deets.data[testName]);
       vm.itemDetails = deets.data[testName];
-
       progressService.done();
-    }).catch(function(ex) {
-      $log.error(ex);
+    })
+    .catch(function(error) {
+      $log.error(error);
       progressService.done();
     });
-  }).catch(function(ex) {
-    $log.error(ex);
-    progressService.done();
-  });
 
   vm.parsePythonLogging = function(showINFO, showDEBUG, showWARNING, showERROR) {
     if (vm.originalDetails && vm.originalDetails.pythonlogging) {
