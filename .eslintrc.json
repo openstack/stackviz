@@ -19,7 +19,9 @@
     "no-extra-parens": [2, "functions"],
     "complexity": 0,
     "no-unused-vars": 0,
-    "guard-for-in": 0
+    "guard-for-in": 0,
+    "quote-props": 0,
+    "no-use-before-define": 0
   }
 
 }
