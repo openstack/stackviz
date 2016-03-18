@@ -29,7 +29,7 @@ var parseWorker = function(tags) {
 /**
  * @ngInject
  */
-function timeline($log, datasetService, progressService) {
+function timeline($window, $log, datasetService, progressService) {
 
   /**
    * @ngInject
@@ -46,17 +46,46 @@ function timeline($log, datasetService, progressService) {
     self.width = 0;
     self.height = 550 - this.margin.top - this.margin.bottom;
 
+    /**
+     * The date extents of all chart entries.
+     */
     self.timeExtents = [0, 0];
+
+    /**
+     * The date extents of the current viewport.
+     */
     self.viewExtents = [0, 0];
     self.axes = {
+      /**
+       * The primary axis mapping date to on-screen x. The lower time bound maps
+       * to x=0, while the upper time bound maps to x=width.
+       */
       x: d3.time.scale(),
-      selection: d3.scale.linear()
+
+      /**
+       * The selection axis, mapping date to on-screen x, depending on the size
+       * and position of the user selection. `selection(viewExtents[0]) = 0`,
+       * while `selection(viewExtents[1]) = width`
+       */
+      selection: d3.scale.linear(),
+
+      /**
+       * The absolute x axis mapping date to virtual x, depending only on the
+       * size (but not position) of the user selection.
+       * `absolute(timeExtents[0]) = 0`, while `absolute(timeExtents[1])` will
+       * be the total width at the current scale, spanning as many
+       * viewport-widths as necessary.
+       */
+      absolute: d3.scale.linear()
     };
 
     self.selectionName = null;
     self.selection = null;
     self.hover = null;
     self.filterFunction = null;
+
+    self.animateId = null;
+    self.animateCallbacks = [];
 
     self.setViewExtents = function(extents) {
       if (angular.isNumber(extents[0])) {
@@ -67,8 +96,25 @@ function timeline($log, datasetService, progressService) {
         extents[1] = new Date(extents[1]);
       }
 
+      var oldSize = self.viewExtents[1] - self.viewExtents[0];
+      var newSize = extents[1] - extents[0];
+
       self.viewExtents = extents;
       self.axes.selection.domain(extents);
+
+      // slight hack: d3 extrapolates by default, and these scales are identical
+      // when the lower bound is zero, so just keep absolute's domain at
+      // [0, selectionWidth]
+      self.axes.absolute.domain([
+        +self.timeExtents[0],
+        +self.timeExtents[0] + newSize
+      ]);
+
+      if (Math.abs(oldSize - newSize) > 1) {
+        $scope.$broadcast('updateViewSize');
+      } else {
+        $scope.$broadcast('updateViewPosition');
+      }
 
       $scope.$broadcast('updateView');
     };
@@ -172,6 +218,117 @@ function timeline($log, datasetService, progressService) {
       return hidden;
     };
 
+    /**
+     * Get all raw data that at least partially fall within the given bounds;
+     * that is, data points with an end date greater than the minimum bound, and
+     * an end date less than the maximum bound. Note that returned data will
+     * be a flat array, i.e. not grouped by worker.
+     * @param  {Date} min the lower date bound
+     * @param  {Date} max the upper date bound
+     * @return {Array}    all matching data points
+     */
+    self.dataInBounds = function(min, max) {
+      return self.dataRaw.filter(function(d) {
+        return (+d.endDate) > (+min) && (+d.startDate) < (+max);
+      });
+    };
+
+    /**
+     * Gets all dstat entries within the given bounds.
+     * @param  {Date} min the lower time bound
+     * @param  {Date} max the upper time bound
+     * @return {Array}    a list of dstat entries within the given bounds
+     */
+    self.dstatInBounds = function(min, max) {
+      var entries = self.dstat.entries;
+      var timeFunc = function(d) { return d.system_time; };
+      return entries.slice(
+        arrayUtil.binaryMinIndex(min, entries, timeFunc),
+        arrayUtil.binaryMaxIndex(max, entries, timeFunc) + 1
+      );
+    };
+
+    /**
+     * Creates an empty canvas with the specified width and height, returning
+     * the element and its 2d context. The element will not be appended to the
+     * document and may be used for offscreen rendering.
+     * @param  {number} [w]  the canvas width in px, or null
+     * @param  {number} [h]  the canvas height in px, or null
+     * @return {object}      an object containing the canvas and its 2d context
+     */
+    self.createCanvas = function(w, h, scale) {
+      w = w || self.width + self.margin.left + self.margin.right;
+      h = h || 200 + self.margin.top + self.margin.bottom;
+      if (typeof scale === 'undefined') {
+        scale = true;
+      }
+
+      /** @type {HTMLCanvasElement} */
+      var canvas = angular.element('<canvas>')[0];
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+
+      /** @type {CanvasRenderingContext2D} */
+      var ctx = canvas.getContext('2d');
+      var devicePixelRatio = $window.devicePixelRatio || 1;
+      var backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+          ctx.mozBackingStorePixelRatio ||
+          ctx.msBackingStorePixelRatio ||
+          ctx.oBackingStorePixelRatio ||
+          ctx.backingStorePixelRatio || 1;
+      var ratio = devicePixelRatio / backingStoreRatio;
+
+      canvas.width = w * ratio;
+      canvas.height = h * ratio;
+
+      if (scale) {
+        ctx.scale(ratio, ratio);
+      }
+
+      var resize = function(w) {
+        canvas.width = w * ratio;
+        canvas.style.width = w + 'px';
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        if (scale) {
+          ctx.scale(ratio, ratio);
+        }
+      };
+
+      return {
+        canvas: canvas, ctx: ctx,
+        scale: scale, ratio: ratio, resize: resize
+      };
+    };
+
+    /**
+     * Request an animation frame from the browser, and call all regsitered
+     * animation callbacks when it occurs. If an animation has already been
+     * requested but has not completed, this method will return immediately.
+     */
+    self.animate = function() {
+      if (self.animateId) {
+        return;
+      }
+
+      var _animate = function(timestamp) {
+        var again = false;
+
+        for (var i = 0; i < self.animateCallbacks.length; i++) {
+          if (self.animateCallbacks[i](timestamp)) {
+            again = true;
+          }
+        }
+
+        if (again) {
+          self.animateId = requestAnimationFrame(_animate);
+        } else {
+          self.animateId = null;
+        }
+      };
+
+      self.animateId = requestAnimationFrame(_animate);
+    };
+
     var initData = function(raw) {
       self.dataRaw = raw;
 
@@ -263,6 +420,7 @@ function timeline($log, datasetService, progressService) {
     $scope.$watch(function() { return self.width; }, function(width) {
       self.axes.x.range([0, width]);
       self.axes.selection.range([0, width]);
+      self.axes.absolute.range([0, width]);
 
       $scope.$broadcast('update');
     });
