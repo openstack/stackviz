@@ -10,10 +10,10 @@ module.exports = function(config) {
     basePath: '../',
     frameworks: ['jasmine', 'browserify'],
     preprocessors: {
-      'app/js/**/*.js': ['browserify', 'babel', 'coverage']
+      'app/js/**/*.js': ['browserify', 'coverage']
     },
-    browsers: ['PhantomJS'],
-    reporters: ['progress', 'coverage'],
+    browsers: ['Chrome'],
+    reporters: ['progress'],
 
     autoWatch: true,
     singleRun: true,
