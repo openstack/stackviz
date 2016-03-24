@@ -1,20 +1,28 @@
-.. stackviz documentation master file, created by
-   sphinx-quickstart on Tue Jul  9 22:26:36 2013.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
 
-Welcome to stackviz's documentation!
+Welcome to Stackviz's documentation!
 ========================================================
 
-Contents:
+Stackviz is a visualization utility to help analyze the performance of DevStack
+setup and Tempest test runs. The following documentation details the procedures
+for installing Stackviz on your local machine to view local runs, as well as
+how to use Stackviz to view upstream runs. For more information on how
+Stackviz runs, see the manual pages.
 
+Local Stackviz:
+---------------
 .. toctree::
    :maxdepth: 2
 
    readme
    installation
    usage
-   contributing
+
+Manual Pages:
+-------------
+.. toctree::
+   :maxdepth: 1
+
+   man/*
 
 Indices and tables
 ==================
@@ -22,4 +30,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
