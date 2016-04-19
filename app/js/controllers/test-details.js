@@ -6,6 +6,14 @@ var controllersModule = require('./_index');
  * @ngInject
  */
 var TestDetailsCtrl =
+/**
+ * Responsible for making three calls to the dataset service. First, the
+ * dataset corresponding to the given int id is loaded, then the raw and details
+ * JSON files are loaded and placed into state variables. Also note that a copy
+ * of the details JSON is kept in `originalDetails` so that information is not
+ * lost when parsing. Progress of the dataset service calls is recorded and
+ * displayed in a progress bar on `test-details.html`.
+*/
 function($scope, $location, $stateParams, $log, datasetService, progressService) {
   var vm = this;
   vm.datasetId = $stateParams.datasetId;
@@ -43,7 +51,18 @@ function($scope, $location, $stateParams, $log, datasetService, progressService)
       progressService.done();
     });
 
-  vm.parsePythonLogging = function(showINFO, showDEBUG, showWARNING, showERROR) {
+  vm.parsePythonLogging =
+  /**
+   * This function changes the `itemDetails.pythonlogging` variable to only
+   * show lines with the log levels specified by the four boolean parameters.
+   * EX: If the `showINFO` parameter is set to true, `itemDetails.pythonlogging`
+   * will display lines that contain the text `INFO`.
+   * @param {boolean} showINFO
+   * @param {boolean} showDEBUG
+   * @param {boolean} showWARNING
+   * @param {boolean} showERROR
+   */
+  function(showINFO, showDEBUG, showWARNING, showERROR) {
     if (vm.originalDetails && vm.originalDetails.pythonlogging) {
       var log = vm.originalDetails.pythonlogging;
       var ret = [];

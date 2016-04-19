@@ -10,7 +10,13 @@ function tempestSummary() {
   /**
    * @ngInject
    */
-  var controller = function($scope, $attrs, datasetService) {
+  var controller =
+  /**
+   * Responsible for getting the basic run summary stats via the dataset service.
+   * Also calculates the duration of the run - `timeDiff` - by subtracting the
+   * run's start and end timestamps.
+   */
+  function($scope, $attrs, datasetService) {
     $scope.$watch('dataset', function(dataset) {
       var stats = dataset.stats;
       $scope.stats = stats;
