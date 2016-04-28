@@ -5,7 +5,7 @@ var directivesModule = require('./_index.js');
 /**
  * @ngInject
  */
-function tempestSummary() {
+function subunitSummary() {
 
   /**
    * Responsible for getting the basic run summary stats via the dataset service.
@@ -26,12 +26,11 @@ function tempestSummary() {
   return {
     restrict: 'EA',
     scope: {
-      'index': '=',
       'artifactName': '='
     },
     controller: controller,
-    templateUrl: 'directives/tempest-summary.html'
+    templateUrl: 'directives/subunit-summary.html'
   };
 }
 
-directivesModule.directive('tempestSummary', tempestSummary);
+directivesModule.directive('subunitSummary', subunitSummary);

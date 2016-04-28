@@ -37,21 +37,3 @@
        </div>
     </div>
 </div>
-
-<div class="panel panel-danger" ng-if="stats.failures.length > 0">
-    <div class="panel-heading">
-        <h3 class="panel-title">Failures</h3>
-    </div>
-    <div class="list-group">
-        <a class="list-group-item"
-           ng-repeat="fail in stats.failures"
-           ui-sref="testDetails({artifactName: artifactName, test: fail.name})">
-            <h4 class="list-group-item-heading">
-                {{fail.name | split:'.' | slice:-2 | join:'.'}}
-            </h4>
-            <p ng-repeat="line in fail.details" class="list-group-item-text">
-                {{line}}
-            </p>
-        </a>
-    </ul>
-</div>
