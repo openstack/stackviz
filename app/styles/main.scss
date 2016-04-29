@@ -5,8 +5,13 @@
 @import 'sb-admin-2';
 @import 'nprogress';
 
+@import 'codemirror';
+@import 'foldgutter';
+@import 'neat';
+
 @import 'directives/_test-details-search.scss';
 @import 'directives/_timeline-details.scss';
 @import 'directives/_timeline-search.scss';
 @import 'directives/_timeline-viewport.scss';
 @import 'directives/_timeline-overview.scss';
+@import 'directives/_codemirror-console.scss';

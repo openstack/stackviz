@@ -29,6 +29,14 @@ function OnConfig($stateProvider, $locationProvider, $urlRouterProvider) {
     title: 'Test Details'
   });
 
+  $stateProvider.state('console', {
+    url: '/{artifactName}/console?show',
+    controller: 'ConsoleController',
+    controllerAs: 'console',
+    templateUrl: 'console.html',
+    title: 'Console'
+  });
+
   $urlRouterProvider.otherwise('/');
 
 }
