@@ -9,20 +9,18 @@
     <div class="row" ng-if="!home.groups.length">
         <div class="col-lg-12">
             <div class="alert alert-danger">
-                No tempest datasets could be loaded!
+                No artifacts could be loaded!
             </div>
         </div>
     </div>
     <div class="row" ng-if="!!home.groups.length">
         <div class="col-lg-8">
-            <tempest-summary ng-if="home.groups.length >= 1"
-                             artifact-name="home.focus"
-                             index="home.focus"></tempest-summary>
+            <artifact-summary artifact-name="home.focus"></artifact-summary>
         </div>
-        <div class="col-lg-4" ng-if="home.datasets.length > 1">
+        <div class="col-lg-4" ng-if="home.groups.length > 1">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Additional Datasets</h3>
+                    <h3 class="panel-title">Other Artifacts</h3>
                 </div>
 
                 <ul class="list-group">
@@ -32,15 +30,6 @@
                         ng-click="home.focus = group"
                         style="cursor: pointer">
                         {{ group }}
-
-                        <!--<small class="text-muted" style="font-size: 75%">
-                            {{dataset.stats.start | date:'MM/d/yyyy'}}
-                        </small>-->
-
-                        <a class="btn btn-default btn-xs pull-right"
-                           ui-sref="timeline({artifactName: group})">
-                            Details
-                        </a>
                     </li>
                 </ul>
             </div>
