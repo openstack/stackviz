@@ -63,6 +63,7 @@
   "scripts": {
     "postinstall": "if [ ! -d .venv ]; then tox -epy27 --notest; fi",
     "test": "gulp unit",
-    "lint": "eslint ./"
+    "lint": "eslint ./",
+    "prod": "gulp prod"
   }
 }
