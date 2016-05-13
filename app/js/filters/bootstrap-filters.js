@@ -2,16 +2,22 @@
 
 var filtersModule = require('./_index.js');
 
-var contextClass = function(test, type) {
+var statusClass = function(status, type) {
   var clazz;
-  if (test.status === 'success') {
-    clazz = 'success';
-  } else if (test.status === 'skip') {
-    clazz = 'info';
-  } else if (test.status === 'fail') {
-    clazz = 'danger';
-  } else {
+  if (!status) {
     clazz = 'default';
+  } else {
+    status = status.toLowerCase();
+
+    if (status === 'success') {
+      clazz = 'success';
+    } else if (status === 'skip') {
+      clazz = 'info';
+    } else if (status === 'fail' || status === 'failure') {
+      clazz = 'danger';
+    } else {
+      clazz = 'default';
+    }
   }
 
   if (type) {
@@ -21,4 +27,9 @@ var contextClass = function(test, type) {
   }
 };
 
+var contextClass = function(test, type) {
+  return statusClass(test.status, type);
+};
+
 filtersModule.filter('contextClass', function() { return contextClass; });
+filtersModule.filter('statusClass', function() { return statusClass; });

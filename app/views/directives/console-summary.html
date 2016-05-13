@@ -1,0 +1,45 @@
+<div class="panel" ng-if="!!console" ng-class="console.status | statusClass:'panel'">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{artifactName}}</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <span class="huge" ng-class="console.status | statusClass:'text'">
+                    {{console.status}}
+                </span>
+                <br>
+                <span class="text-muted">status</span>
+            </div>
+            <div class="col-md-6 text-center">
+                <span class="huge text-info" ng-if="console.remaining.length == 0">
+                    {{console.scripts.length}} of
+                    {{console.scripts.length + console.remaining.length}}
+                </span>
+                <span class="huge text-danger" ng-if="console.remaining.length > 0">
+                    {{console.scripts.length}} of
+                    {{console.scripts.length + console.remaining.length}}
+                </span>
+                <br>
+                <span class="text-muted">scripts completed</span>
+            </div>
+        </div>
+        <div class="row" ng-if="console.remaining.length > 0">
+            <hr>
+            <div class="col-xs-12 text-center">
+                <span class="huge text-danger">
+                    {{console.scripts[console.scripts.length - 2].name}}
+                </span>
+                <br>
+                <span class="text-muted">last script run</span>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer clearfix">
+        <div class="btn-group pull-right">
+            <a type="button"
+               class="btn btn-default"
+               ui-sref="console({artifactName: artifactName})">Details</a>
+       </div>
+    </div>
+</div>

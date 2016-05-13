@@ -1,0 +1,9 @@
+codemirror-console {
+    font-size: 12px;
+
+    .CodeMirror-linewidget .console-script-header {
+        font-weight: bold;
+        text-align: center;
+        background-color: lightgray;
+    }
+}
