@@ -3,6 +3,15 @@
         <h1 class="page-header">
             Timeline: {{ timeline.artifactName }}
         </h1>
+        <ol class="breadcrumb">
+            <li><a ui-sref="home">Home</a></li>
+            <li>
+                <a ui-sref="home({artifactName: timeline.artifactName})">
+                    {{ timeline.artifactName }}
+                </a>
+            </li>
+            <li class="active">Timeline</li>
+        </ol>
     </div>
 </header>
 

@@ -1,6 +1,15 @@
 <header class="bs-header">
     <div class="container">
         <h1 class="page-header">Test Details</h1>
+        <ol class="breadcrumb">
+            <li><a ui-sref="home">Home</a></li>
+            <li>
+                <a ui-sref="home({artifactName: testDetails.artifactName})">
+                    {{ testDetails.artifactName }}
+                </a>
+            </li>
+            <li class="active">Test Details: {{ testDetails.item.name | split:'.' | pickRight:1 }}</li>
+        </ol>
     </div>
 </header>
 

@@ -3,6 +3,15 @@
         <h1 class="page-header">
             Console: {{ console.artifactName }}
         </h1>
+        <ol class="breadcrumb">
+            <li><a ui-sref="home">Home</a></li>
+            <li>
+                <a ui-sref="home({artifactName: console.artifactName})">
+                    {{ console.artifactName }}
+                </a>
+            </li>
+            <li class="active">Console</li>
+        </ol>
     </div>
 </header>
 
