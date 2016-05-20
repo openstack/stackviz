@@ -1,6 +1,7 @@
 'use strict';
 
-var d3 = require("d3");
+var timeFormat = require('d3-time-format');
+var dsv = require('d3-dsv');
 
 var fillArrayRight = function(array) {
 
@@ -37,9 +38,9 @@ var parseDstat = function(data, year) {
   // assume UTC - may not necessarily be the case?
   // dstat doesn't include the year in its logs, so we'll need to copy it
   // from the subunit logs
-  var dateFormat = d3.time.format.utc("%d-%m %H:%M:%S");
+  var dateFormat = timeFormat.utcParse('%d-%m %H:%M:%S');
 
-  var parsed = d3.csv.parseRows(data, function(row, i) {
+  var parsed = dsv.csvParseRows(data, function(row, i) {
     if (i === 0) {
       if (row.length !== 1 ||
           !row[0].startsWith('Dstat') ||
@@ -64,8 +65,8 @@ var parseDstat = function(data, year) {
         var name = names[col];
         var value = row[col];
         if (value && name) {
-          if (name === "system_time") {
-            value = dateFormat.parse(value);
+          if (name === 'system_time') {
+            value = dateFormat(value);
             value.setFullYear(1900 + year);
           } else {
             value = parseFloat(value);

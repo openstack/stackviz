@@ -1,12 +1,16 @@
 'use strict';
 
-var d3 = require('d3');
-
 var filtersModule = require('./_index.js');
 
-var secondsToTime = function(seconds) {
-  var format = d3.format('02d');
+var format = function(value) {
+  if (value < 10) {
+    return '0' + value;
+  } else {
+    return value.toString();
+  }
+};
 
+var secondsToTime = function(seconds) {
   var hours = Math.floor(seconds / 60 / 60);
   seconds = seconds - (hours * 60 * 60);
 

@@ -4,7 +4,10 @@ var directivesModule = require('./_index.js');
 
 var arrayUtil = require('../util/array-util');
 var parseDstat = require('../util/dstat-parse');
-var d3 = require('d3');
+
+var d3Array = require('d3-array');
+var d3Collection = require('d3-collection');
+var d3Scale = require('d3-scale');
 
 var statusColorMap = {
   'success': 'LightGreen',
@@ -60,14 +63,14 @@ function timeline($window, $log, datasetService, progressService) {
        * The primary axis mapping date to on-screen x. The lower time bound maps
        * to x=0, while the upper time bound maps to x=width.
        */
-      x: d3.time.scale(),
+      x: d3Scale.scaleTime(),
 
       /**
        * The selection axis, mapping date to on-screen x, depending on the size
        * and position of the user selection. `selection(viewExtents[0]) = 0`,
        * while `selection(viewExtents[1]) = width`
        */
-      selection: d3.scale.linear(),
+      selection: d3Scale.scaleLinear(),
 
       /**
        * The absolute x axis mapping date to virtual x, depending only on the
@@ -76,7 +79,7 @@ function timeline($window, $log, datasetService, progressService) {
        * be the total width at the current scale, spanning as many
        * viewport-widths as necessary.
        */
-      absolute: d3.scale.linear()
+      absolute: d3Scale.scaleLinear()
     };
 
     self.selectionName = null;
@@ -88,12 +91,12 @@ function timeline($window, $log, datasetService, progressService) {
     self.animateCallbacks = [];
 
     self.setViewExtents = function(extents) {
-      if (angular.isNumber(extents[0])) {
-        extents[0] = new Date(extents[0]);
+      if (extents[0] instanceof Date) {
+        extents[0] = +extents[0];
       }
 
-      if (angular.isNumber(extents[1])) {
-        extents[1] = new Date(extents[1]);
+      if (extents[1] instanceof Date) {
+        extents[1] = +extents[1];
       }
 
       var oldSize = self.viewExtents[1] - self.viewExtents[0];
@@ -357,9 +360,9 @@ function timeline($window, $log, datasetService, progressService) {
 
       self.timeExtents = [ minStart, maxEnd ];
 
-      self.data = d3.nest()
+      self.data = d3Collection.nest()
           .key(function(d) { return d.worker; })
-          .sortKeys(d3.ascending)
+          .sortKeys(d3Array.ascending)
           .entries(raw.filter(function(d) { return d.duration > 0; }));
 
       self.axes.x.domain(self.timeExtents);
@@ -444,18 +447,16 @@ function timeline($window, $log, datasetService, progressService) {
     scope.$on('windowResize', updateWidth);
     updateWidth();
 
-    d3.select(window)
-      .on("keydown", function() {
-        var code = d3.event.keyCode;
-        if (code === 37) {
-          ctrl.selectPreviousItem();
-        }
-        if (code === 39) {
-          ctrl.selectNextItem();
-        }
-        scope.$apply();
-      });
+    $window.addEventListener('keydown', function(evt) {
+      if (evt.keyCode === 37) {
+        ctrl.selectPreviousItem();
+      }
+      if (evt.keyCode === 39) {
+        ctrl.selectNextItem();
+      }
 
+      scope.$apply();
+    });
   };
 
   return {
