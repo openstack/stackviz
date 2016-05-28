@@ -50,6 +50,7 @@
     "karma-chrome-launcher": "0.2.3",
     "karma-coverage": "0.5.5",
     "karma-jasmine": "0.3.8",
+    "karma-subunit-reporter": "0.0.4",
     "morgan": "1.7.0",
     "nprogress": "^0.2.0",
     "pretty-hrtime": "1.0.2",

@@ -5,6 +5,7 @@ build
 app/js/templates.js
 app/data
 *.py[cod]
+karma.subunit
 
 # C extensions
 *.so
