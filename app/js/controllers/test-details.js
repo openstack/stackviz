@@ -13,10 +13,11 @@ var controllersModule = require('./_index');
  */
 function TestDetailsCtrl(
     $scope, $location, $stateParams, $log, $q,
-    datasetService, progressService) {
+    datasetService, progressService, AppSettings) {
   var vm = this;
   vm.artifactName = $stateParams.artifactName;
   vm.testName = $stateParams.test;
+  vm.healthRoot = AppSettings.healthRoot;
 
   progressService.start({ parent: 'div[role="main"] .panel-body' });
 

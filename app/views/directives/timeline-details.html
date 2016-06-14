@@ -12,7 +12,10 @@
      ng-class="item | contextClass:'panel'">
     <div class="panel-heading">
         <h3 class="panel-title">
-            Details: {{item.name | split:'.' | pickRight:1}}
+            Details: <a href="{{healthRoot}}/#/test/{{item.name}}"
+                        target="_blank" uib-tooltip="Show in OpenStack-health">
+              {{item.name | split:'.' | pickRight:1}}
+              <fa name="external-link"></fa></a>
             <span class="label label-{{item | contextClass}}">
                 {{item.status}}
             </span>

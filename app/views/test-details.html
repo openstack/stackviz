@@ -33,7 +33,11 @@
                         <td>{{testDetails.item.name | split:'.' | pickRight:1}}</td>
                     <tr>
                         <td>Full Name</td>
-                        <td>{{testDetails.item.name}}</td>
+                        <td><a href="{{testDetails.healthRoot}}/#/test/{{testDetails.item.name}}"
+                               target="_blank"
+                               uib-tooltip="Show in OpenStack-health">
+                          {{testDetails.item.name}}
+                          <fa name="external-link"></fa></a></td>
                     </tr>
                     <tr>
                         <td>Status</td>
