@@ -55,7 +55,7 @@ def open_compressed(output_dir, file_name, compress):
     else:
         open_func = open
 
-    return open_func(os.path.join(output_dir, file_name), 'wb'), file_name
+    return open_func(os.path.join(output_dir, file_name), 'w'), file_name
 
 
 def json_date_handler(object):
@@ -195,7 +195,7 @@ def export_tempest(provider, output_dir, compress):
 
 
 def export_dstat(path, output_dir, compress):
-    f = open(path, 'rb')
+    f = open(path, 'r')
     out_stream, out_file = open_compressed(
         output_dir,
         'dstat.csv',

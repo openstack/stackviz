@@ -222,7 +222,7 @@ def _strip(text):
 
 
 def _clean_details(details):
-    return {_strip(k): v.as_text() for k, v in details.iteritems()
+    return {_strip(k): v.as_text() for k, v in list(details.items())
             if v.as_text()}
 
 
