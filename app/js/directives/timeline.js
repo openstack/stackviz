@@ -362,7 +362,9 @@ function timeline($window, $log, datasetService, progressService) {
 
       self.data = d3Collection.nest()
           .key(function(d) { return d.worker; })
-          .sortKeys(d3Array.ascending)
+          .sortKeys(function(a, b) {
+            return parseInt(a, 10) - parseInt(b, 10);
+          })
           .entries(raw.filter(function(d) { return d.duration > 0; }));
 
       self.axes.x.domain(self.timeExtents);
