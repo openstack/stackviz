@@ -3,7 +3,10 @@
 var directivesModule = require('./_index.js');
 var arrayUtil = require('../util/array-util');
 
-var d3 = require('d3');
+var d3Ease = require('d3-ease');
+var d3Interpolate = require('d3-interpolate');
+var d3Scale = require('d3-scale');
+var d3TimeFormat = require('d3-time-format');
 
 /**
  * @ngInject
@@ -17,16 +20,16 @@ function timelineViewport($document, $window) {
     var loaded = false;
 
     // axes and timeline-global variables
-    var y = d3.scale.linear();
+    var y = d3Scale.scaleLinear();
     var absolute = timelineController.axes.absolute;
     var xSelected = timelineController.axes.selection;
-    var cursorTimeFormat = d3.time.format('%X');
+    var cursorTimeFormat = d3TimeFormat.timeFormat('%X');
     var tickFormat = timelineController.axes.x.tickFormat();
 
     // animation variables
     var currentViewExtents = null;
     var viewInterpolator = null;
-    var easeOutCubic = d3.ease('cubic-out');
+    var easeOutCubic = d3Ease.easeCubicOut;
     var easeStartTimestamp = null;
     var easeDuration = 500;
 
@@ -361,7 +364,7 @@ function timelineViewport($document, $window) {
 
       // make a scale for the position of this region, but shrink it slightly so
       // no labels overlap region boundaries and get cut off
-      var tickScale = d3.time.scale().domain([
+      var tickScale = d3Scale.scaleTime().domain([
         absolute.invert(region.x + 10),
         absolute.invert(region.x + region.width - 10)
       ]);
@@ -613,7 +616,7 @@ function timelineViewport($document, $window) {
 
       if (currentViewExtents) {
         // if we know where the view is already, try to animate the transition
-        viewInterpolator = d3.interpolate(
+        viewInterpolator = d3Interpolate.interpolateArray(
             currentViewExtents,
             timelineController.viewExtents);
         easeStartTimestamp = performance.now();
@@ -633,7 +636,7 @@ function timelineViewport($document, $window) {
 
       if (currentViewExtents) {
         // if we know where the view is already, try to animate the transition
-        viewInterpolator = d3.interpolate(
+        viewInterpolator = d3Interpolate.interpolateArray(
             currentViewExtents,
             timelineController.viewExtents);
         easeStartTimestamp = performance.now();

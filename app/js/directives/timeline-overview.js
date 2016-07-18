@@ -2,7 +2,7 @@
 
 var directivesModule = require('./_index.js');
 
-var d3 = require('d3');
+var d3Scale = require('d3-scale');
 
 function timelineOverview($document, $window) {
   var link = function(scope, el, attrs, timelineController) {
@@ -14,7 +14,7 @@ function timelineOverview($document, $window) {
 
     // scales and extents
     var x = timelineController.axes.x;
-    var y = d3.scale.linear();
+    var y = d3Scale.scaleLinear();
     var brushExtent = [0, 0];
     var handleSize = 3;
 
@@ -81,7 +81,7 @@ function timelineOverview($document, $window) {
       }
 
       var size = viewEnd - viewStart;
-      var currentMid = viewStart.getTime() + (size / 2);
+      var currentMid = (+viewStart) + (size / 2);
       var targetMid = item.startDate.getTime() + (item.endDate - item.startDate) / 2;
 
       var targetStart, targetEnd;

@@ -2,9 +2,12 @@
 
 var directivesModule = require('./_index.js');
 
+var d3Ease = require('d3-ease');
+var d3Interpolate = require('d3-interpolate');
+var d3Scale = require('d3-scale');
+
 var arrayUtil = require('../util/array-util');
 var parseDstat = require('../util/dstat-parse');
-var d3 = require('d3');
 
 var getDstatLanes = function(data, mins, maxes) {
   if (!data || !data.length) {
@@ -16,14 +19,14 @@ var getDstatLanes = function(data, mins, maxes) {
 
   if ('total_cpu_usage_usr' in row && 'total_cpu_usage_sys' in row) {
     lanes.push([{
-      scale: d3.scale.linear().domain([0, 100]),
+      scale: d3Scale.scaleLinear().domain([0, 100]),
       value: function(d) {
         return d.total_cpu_usage_wai;
       },
       color: "rgba(224, 188, 188, 1)",
       text: "CPU wait"
     }, {
-      scale: d3.scale.linear().domain([0, 100]),
+      scale: d3Scale.scaleLinear().domain([0, 100]),
       value: function(d) {
         return d.total_cpu_usage_usr + d.total_cpu_usage_sys;
       },
@@ -34,7 +37,7 @@ var getDstatLanes = function(data, mins, maxes) {
 
   if ('memory_usage_used' in row) {
     lanes.push([{
-      scale: d3.scale.linear().domain([0, maxes.memory_usage_used]),
+      scale: d3Scale.scaleLinear().domain([0, maxes.memory_usage_used]),
       value: function(d) { return d.memory_usage_used; },
       color: "rgba(102, 140, 178, 0.75)",
       text: "Memory"
@@ -43,12 +46,12 @@ var getDstatLanes = function(data, mins, maxes) {
 
   if ('net_total_recv' in row && 'net_total_send' in row) {
     lanes.push([{
-      scale: d3.scale.linear().domain([0, maxes.net_total_recv]),
+      scale: d3Scale.scaleLinear().domain([0, maxes.net_total_recv]),
       value: function(d) { return d.net_total_recv; },
       color: "rgba(224, 188, 188, 1)",
       text: "Net Down"
     }, {
-      scale: d3.scale.linear().domain([0, maxes.net_total_send]),
+      scale: d3Scale.scaleLinear().domain([0, maxes.net_total_send]),
       value: function(d) { return d.net_total_send; },
       color: "rgba(102, 140, 178, 0.75)",
       text: "Net Up",
@@ -58,13 +61,13 @@ var getDstatLanes = function(data, mins, maxes) {
 
   if ('dsk_total_read' in row && 'dsk_total_writ' in row) {
     lanes.push([{
-      scale: d3.scale.linear().domain([0, maxes.dsk_total_read]),
+      scale: d3Scale.scaleLinear().domain([0, maxes.dsk_total_read]),
       value: function(d) { return d.dsk_total_read; },
       color: "rgba(224, 188, 188, 1)",
       text: "Disk Read",
       type: "line"
     }, {
-      scale: d3.scale.linear().domain([0, maxes.dsk_total_writ]),
+      scale: d3Scale.scaleLinear().domain([0, maxes.dsk_total_writ]),
       value: function(d) { return d.dsk_total_writ; },
       color: "rgba(102, 140, 178, 0.75)",
       text: "Disk Write",
@@ -87,12 +90,12 @@ function timelineDstat($document, $window) {
     // axes and dstat-global variables
     var absolute = timelineController.axes.absolute;
     var xSelected = timelineController.axes.selection;
-    var y = d3.scale.linear();
+    var y = d3Scale.scaleLinear();
 
     // animation variables
     var currentViewExtents = null;
     var viewInterpolator = null;
-    var easeOutCubic = d3.ease('cubic-out');
+    var easeOutCubic = d3Ease.easeCubicOut;
     var easeStartTimestamp = null;
     var easeDuration = 500;
 
@@ -406,7 +409,7 @@ function timelineDstat($document, $window) {
 
       if (currentViewExtents) {
         // if we know where the view is already, try to animate the transition
-        viewInterpolator = d3.interpolate(
+        viewInterpolator = d3Interpolate.interpolateArray(
             currentViewExtents,
             timelineController.viewExtents);
         easeStartTimestamp = performance.now();
@@ -426,7 +429,7 @@ function timelineDstat($document, $window) {
 
       if (currentViewExtents) {
         // if we know where the view is already, try to animate the transition
-        viewInterpolator = d3.interpolate(
+        viewInterpolator = d3Interpolate.interpolateArray(
             currentViewExtents,
             timelineController.viewExtents);
         easeStartTimestamp = performance.now();
