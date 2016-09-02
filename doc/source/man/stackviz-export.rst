@@ -19,7 +19,7 @@ Usage
 Where DEST is the output directory of the module. If DEST does not exist, a new
 directory will be created. One of the following input options must be chosen:
 
-  **-f, --streamfile FILE**
+  **-f, --stream-file FILE**
       Specifies a subunit stream file to be used with the exporter. This
       argument can be used multiple times to specify additional subunit files.
 
