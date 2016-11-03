@@ -1,7 +1,6 @@
 [run]
 branch = True
 source = stackviz
-omit = stackviz/openstack/*
 
 [report]
 ignore_errors = True
