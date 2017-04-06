@@ -1,5 +1,4 @@
 python-subunit>=0.0.18
 testtools>=0.9.30
 testrepository>=0.0.18
-mysql-python>=1.2.5
 subunit2sql>=0.8.0
