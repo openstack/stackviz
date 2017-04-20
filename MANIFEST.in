@@ -1,0 +1,9 @@
+# ignore these; pbr is putting everything in git
+# in the sdist, but we're a hybird package
+prune test
+prune gulp
+prune app
+
+# The html/js to view results; created by npm run build
+# installed in "html" via data-file in setup.cfg
+recursive-include gulp-build *

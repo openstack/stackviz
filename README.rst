@@ -64,8 +64,21 @@ The production application can be build using::
 
     gulp prod
 
-The result will be written to :code:`./build` and should be appropriate for
-distribution. Note that all files are not required:
+This will automatically build portable html/javascript and python
+utilities into ``dist/stackviz-VERSION.tar.gz``.
+
+You should probably install this into a ``virtualenv`` on the target
+system::
+
+  virtualenv stackviz
+  ./virtualenv/bin/pip install /path/to/stackviz-VERSION.tar.gz
+  # to run stackviz export
+  ./virtualenv/bin/stackviz-export
+
+Note the required html will be placed in ``virtualenv/share/stackviz-html``
+as a data-file (or elsewhere, if installed as a system package; this
+may vary on distributions).  This can be moved as required.  Note that
+all files in there are not required:
 
 - Directory structure (:code:`js/`, :code:`css/`, :code:`fonts/`,
   :code:`images/`): required.
@@ -77,10 +90,8 @@ distribution. Note that all files are not required:
 - Source maps (:code:`js/main.js.map`, :code:`js/main.js.map.gz`): only required
   for debugging purposes.
 
-Data should be written to :code:`build/data/` using :code:`stackviz-export` like
-above. Note that the static production code generated above is portable, and can
-be generated anywhere and copied to another host to be combined with exported
-data.
+Data should be written to :code:`stackviz-html/data/` using
+:code:`stackviz-export` like above.
 
 Testing
 =======
