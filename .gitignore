@@ -2,6 +2,7 @@
 .idea
 node_modules
 build
+gulp-build
 app/js/templates.js
 app/data
 *.py[cod]

@@ -72,6 +72,6 @@
     "postinstall": "if [ ! -d .venv ]; then tox -epy27 --notest; fi",
     "test": "gulp unit",
     "lint": "eslint ./",
-    "prod": "gulp prod"
+    "prod": "gulp prod; python setup.py sdist"
   }
 }

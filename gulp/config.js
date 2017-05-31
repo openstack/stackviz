@@ -8,17 +8,17 @@ module.exports = {
 
   'styles': {
     'src' : 'app/styles/**/*.scss',
-    'dest': 'build/css'
+    'dest': 'gulp-build/css'
   },
 
   'scripts': {
     'src' : 'app/js/**/*.js',
-    'dest': 'build/js'
+    'dest': 'gulp-build/js'
   },
 
   'fonts': {
     'src' : ['app/fonts/**/*'],
-    'dest': 'build/fonts'
+    'dest': 'gulp-build/fonts'
   },
 
   'views': {
@@ -31,14 +31,14 @@ module.exports = {
   },
 
   'gzip': {
-    'src': 'build/**/*.{html,xml,json,css,js,js.map}',
+    'src': 'gulp-build/**/*.{html,xml,json,css,js,js.map}',
     'rewrite': '**/*.html',
-    'dest': 'build/',
+    'dest': 'gulp-build/',
     'options': {}
   },
 
   'dist': {
-    'root'  : 'build'
+    'root'  : 'gulp-build'
   },
 
   'browserify': {
@@ -54,7 +54,7 @@ module.exports = {
 
   'data': {
     'src' : ['app/data/**/*'],
-    'dest': 'build/data'
+    'dest': 'gulp-build/data'
   }
 
 };
