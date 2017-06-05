@@ -128,13 +128,14 @@ Services
     :code:`stackviz-export` ends up in the `./app/data/` directory to be called
     by dataset service with :code:`$http` and :code:`$q` directives. Below is
     the list of calls:
-        - :code:`list` returns `config.json` using GET.
-        - :code:`get(id)` calls :code:`list`, then iterates through all the
-          available datasets for the requested id number. Rejects if not found.
-        - :code:`raw(dataset)` returns `<dataset>_raw.json` file using GET.
-        - :code:`details(dataset)` returns `<dataset>_details.json` file using GET.
-        - :code:`tree(dataset)` returns `<dataset>_tree.json` file using GET.
-        - :code:`dstat(dataset)` returns `dstat_log.csv` file using GET, if available.
+
+      - :code:`list` returns `config.json` using GET.
+      - :code:`get(id)` calls :code:`list`, then iterates through all the
+        available datasets for the requested id number. Rejects if not found.
+      - :code:`raw(dataset)` returns `<dataset>_raw.json` file using GET.
+      - :code:`details(dataset)` returns `<dataset>_details.json` file using GET.
+      - :code:`tree(dataset)` returns `<dataset>_tree.json` file using GET.
+      - :code:`dstat(dataset)` returns `dstat_log.csv` file using GET, if available.
 
 **progress**
     A wrapper for :code:`nprogress`, a progress bar library. Used in the timeline

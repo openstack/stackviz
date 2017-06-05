@@ -76,6 +76,7 @@ source the
         - :code:`details`: empty, this info is available in the details JSON
         - :code:`duration`: how long the test took, in seconds
         - :code:`timestamps`: timestamps at test begin and test end
+
     This file is used in the timeline and test details page.
 
 **tempest_<source>_<id>_tree.json**
