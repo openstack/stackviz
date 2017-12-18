@@ -19,31 +19,31 @@ Usage
 Where DEST is the output directory of the module. If DEST does not exist, a new
 directory will be created. One of the following input options must be chosen:
 
-  **-f, --stream-file FILE**
-      Specifies a subunit stream file to be used with the exporter. This
-      argument can be used multiple times to specify additional subunit files.
+**-f, --stream-file FILE**
+    Specifies a subunit stream file to be used with the exporter. This
+    argument can be used multiple times to specify additional subunit files.
 
-  **-i, --stdin**
-      Instructs stackviz-export to read a subunit stream from stdin.
+**-i, --stdin**
+    Instructs stackviz-export to read a subunit stream from stdin.
 
-  **-r, --repository REPOSITORY**
-      Specifies a :code:`.testrepository` to read subunit streams from. This
-      argument can be used multiple times to specify additional repositories.
+**-r, --repository REPOSITORY**
+    Specifies a :code:`.testrepository` to read subunit streams from. This
+    argument can be used multiple times to specify additional repositories.
 
 Stackviz also visualizes machine utilization statistics using dstat. To attach
 a dstat.csv log to the subunit output, specify the following option:
 
-  **--dstat FILE**
-      Specifies a csv-formatted dstat log file that corresponds with the
-      provided subunit stream file.
+**--dstat FILE**
+    Specifies a csv-formatted dstat log file that corresponds with the
+    provided subunit stream file.
 
 Additional options:
 
-  **-h --help**
-      Print help message.
+**-h --help**
+    Print help message.
 
-  **-z --gzip**
-      Enables gzip compression for data files.
+**-z --gzip**
+    Enables gzip compression for data files.
 
 Output
 ======

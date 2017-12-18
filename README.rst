@@ -16,13 +16,14 @@ with local run data. Stackviz is currently in the process of being implemented
 upstream (see Roadmap and Planning). To use Stackviz with upstream gate runs,
 please see the server deployment project at:
 
-    https://github.com/timothyb89/stackviz-deployer
+* https://github.com/timothyb89/stackviz-deployer
 
 Installation
 ============
 Installation - Frontend
 -----------------------
 Installation of the frontend requires Node.js and Gulp. On Ubuntu::
+
     sudo apt-get install nodejs npm nodejs-legacy
     sudo npm install -g gulp
 
@@ -95,7 +96,7 @@ Data should be written to :code:`stackviz-html/data/` using
 
 Testing
 =======
-* Python tests: :code:`tox -epy27`
+* Python tests: :code:`tox -e py27`
 * JavaScript unit tests: :code:`gulp unit`
 * JavaScript E2E tests: :code:`gulp e2e`
 

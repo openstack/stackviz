@@ -57,25 +57,25 @@ found on the test panel on the timeline. Additional tabs in this panel
 are dependent upon the logs that the test kept. Each of these tabs provides
 additional information to aid debugging. The most common tabs include:
 
-  **pythonlogging**
-      Contains logs for API calls that were used in the test. This
-      log is often quite large, as it contains full headers for every request
-      at INFO, DEBUG, WARNING, and ERROR levels. To make searching these logs
-      easier, the test details page has a built in filter for parsing by log
-      level. In the header of the test details page, the magnifying glass
-      can be clicked to only show pythonlogging lines that correspond to a
-      certain level of detail. To find errors in pythonlogging quickly, it is
-      advisable to only select the WARNING and ERROR levels for display.
+**pythonlogging**
+    Contains logs for API calls that were used in the test. This
+    log is often quite large, as it contains full headers for every request
+    at INFO, DEBUG, WARNING, and ERROR levels. To make searching these logs
+    easier, the test details page has a built in filter for parsing by log
+    level. In the header of the test details page, the magnifying glass
+    can be clicked to only show pythonlogging lines that correspond to a
+    certain level of detail. To find errors in pythonlogging quickly, it is
+    advisable to only select the WARNING and ERROR levels for display.
 
-  **reason**
-      Only available for skipped tests. Lists the reason for skipping the test,
-      usually to avoid triggering an outstanding bug.
+**reason**
+    Only available for skipped tests. Lists the reason for skipping the test,
+    usually to avoid triggering an outstanding bug.
 
-  **traceback**
-      Only available for failed tests. Shows the full traceback of the test
-      runner's error output when the test failed. This is useful in quickly
-      isolating the cause of a failure. There can be multiple traceback logs
-      (e.g. traceback, traceback1) for one test.
+**traceback**
+    Only available for failed tests. Shows the full traceback of the test
+    runner's error output when the test failed. This is useful in quickly
+    isolating the cause of a failure. There can be multiple traceback logs
+    (e.g. traceback, traceback1) for one test.
 
 When enough information has been gleaned from more detailed logs, the button
 in the panel filter can be used to quickly navigate back to the timeline page.
@@ -129,13 +129,13 @@ Services
     by dataset service with :code:`$http` and :code:`$q` directives. Below is
     the list of calls:
 
-      - :code:`list` returns `config.json` using GET.
-      - :code:`get(id)` calls :code:`list`, then iterates through all the
-        available datasets for the requested id number. Rejects if not found.
-      - :code:`raw(dataset)` returns `<dataset>_raw.json` file using GET.
-      - :code:`details(dataset)` returns `<dataset>_details.json` file using GET.
-      - :code:`tree(dataset)` returns `<dataset>_tree.json` file using GET.
-      - :code:`dstat(dataset)` returns `dstat_log.csv` file using GET, if available.
+    - :code:`list` returns `config.json` using GET.
+    - :code:`get(id)` calls :code:`list`, then iterates through all the
+      available datasets for the requested id number. Rejects if not found.
+    - :code:`raw(dataset)` returns `<dataset>_raw.json` file using GET.
+    - :code:`details(dataset)` returns `<dataset>_details.json` file using GET.
+    - :code:`tree(dataset)` returns `<dataset>_tree.json` file using GET.
+    - :code:`dstat(dataset)` returns `dstat_log.csv` file using GET, if available.
 
 **progress**
     A wrapper for :code:`nprogress`, a progress bar library. Used in the timeline
