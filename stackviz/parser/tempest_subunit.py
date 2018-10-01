@@ -15,6 +15,7 @@
 import os
 import re
 import shutil
+import six
 import subunit
 import sys
 
@@ -134,13 +135,22 @@ class FileProvider(SubunitProvider):
         if index != 0:
             raise IndexError("Index out of bounds: %d" % index)
 
-        return open(self.path, "r")
+        # Subunit is a binary protocol we need to ensure we read
+        # the contents as binary. On python3 this requires we open
+        # the file in binary mode otherwise it will be encoded.
+        return open(self.path, "rb")
 
 
 class StandardInputProvider(SubunitProvider):
     def __init__(self):
         self.buffer = BytesIO()
-        shutil.copyfileobj(sys.stdin, self.buffer)
+        # Subunit is a binary protocol we need to ensure we read
+        # the contents as binary. On python3 this requires we use
+        # the stdin.buffer object as stdin is encoded otherwise.
+        if six.PY3:
+            shutil.copyfileobj(sys.stdin.buffer, self.buffer)
+        else:
+            shutil.copyfileobj(sys.stdin, self.buffer)
         self.buffer.seek(0)
 
     @property

@@ -21,10 +21,43 @@ test_stackviz
 Tests for `stackviz` module.
 """
 
+import json
+import os.path
+import sys  # noqa for monkeypatching below
+
+import fixtures
+
+import stackviz.export as export
+from stackviz.parser import tempest_subunit
 from stackviz.tests import base
 
 
 class TestStackviz(base.TestCase):
 
-    def test_something(self):
-        pass
+    def test_export_file(self):
+        tmp_fixture = self.useFixture(fixtures.TempDir())
+        output_dir = tmp_fixture.path
+        subunit_path = os.path.join(os.path.dirname(__file__),
+                                    'fixtures', 'tempest.subunit')
+        providers = tempest_subunit.get_providers(None, [subunit_path], None)
+        export.export_tempest(list(providers.values())[0], output_dir, False)
+        output_file = os.path.join(output_dir,
+                                   'tempest.subunit-0-details.json')
+        j = json.load(open(output_file))
+        assert "tempest.api.compute.admin" \
+               ".test_agents.AgentsAdminTestJSON.test_create_agent" in j
+
+    def test_export_stdin(self):
+        tmp_fixture = self.useFixture(fixtures.TempDir())
+        output_dir = tmp_fixture.path
+        subunit_path = os.path.join(os.path.dirname(__file__),
+                                    'fixtures', 'tempest.subunit')
+        subunit_stream = open(subunit_path)
+        with fixtures.MonkeyPatch('sys.stdin', subunit_stream):
+            providers = tempest_subunit.get_providers(None, None, True)
+            export.export_tempest(list(providers.values())[0],
+                                  output_dir, False)
+        output_file = os.path.join(output_dir, 'stdin-0-details.json')
+        j = json.load(open(output_file))
+        assert "tempest.api.compute.admin" \
+               ".test_agents.AgentsAdminTestJSON.test_create_agent" in j

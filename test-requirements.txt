@@ -10,3 +10,4 @@ discover
 sphinx>=1.6.2 # BSD
 oslotest>=1.2.0  # Apache-2.0
 openstackdocstheme>=1.17.0 # Apache-2.0
+fixtures
