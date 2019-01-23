@@ -304,7 +304,7 @@ function timeline($window, $log, datasetService, progressService) {
     };
 
     /**
-     * Request an animation frame from the browser, and call all regsitered
+     * Request an animation frame from the browser, and call all registered
      * animation callbacks when it occurs. If an animation has already been
      * requested but has not completed, this method will return immediately.
      */
