@@ -1,3 +1,11 @@
+- job:
+    name: periodic-package-stackviz-element
+    parent: legacy-publish-openstack-artifacts
+    run: playbooks/legacy/periodic-package-stackviz-element/run.yaml
+    post-run: playbooks/legacy/periodic-package-stackviz-element/post.yaml
+    branches: master
+    timeout: 1800
+
 - project:
     templates:
       - nodejs4-jobs
@@ -7,4 +15,4 @@
       - openstack-python36-jobs
     periodic:
       jobs:
-        - legacy-periodic-package-stackviz-element
+        - periodic-package-stackviz-element
