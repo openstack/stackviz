@@ -5,6 +5,7 @@
       - publish-openstack-docs-pti
       - openstack-python35-jobs
       - openstack-python36-jobs
+      - openstack-python37-jobs
     periodic:
       jobs:
         - legacy-periodic-package-stackviz-element
