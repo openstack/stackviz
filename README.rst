@@ -96,7 +96,7 @@ Data should be written to :code:`stackviz-html/data/` using
 
 Testing
 =======
-* Python tests: :code:`tox -e py27`
+* Python tests: :code:`tox -e py36`
 * JavaScript unit tests: :code:`gulp unit`
 * JavaScript E2E tests: :code:`gulp e2e`
 
