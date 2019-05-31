@@ -13,7 +13,7 @@ module.exports = function(config) {
       'app/js/**/*.js': ['browserify', 'coverage']
     },
     browsers: ['Chrome'],
-    reporters: ['progress'],
+    reporters: ['progress', 'subunit'],
 
     autoWatch: true,
     singleRun: true,
@@ -27,6 +27,11 @@ module.exports = function(config) {
           ignore: ['**/node_modules/**', '**/test/**']
         })
       ]
+    },
+
+    subunitReporter: {
+      slug: true,
+      tags: ['worker-0']
     },
 
     proxies: {
