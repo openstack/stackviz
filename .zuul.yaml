@@ -8,7 +8,7 @@
 
 - project:
     templates:
-      - nodejs4-jobs
+      - nodejs8-jobs
       - openstack-python-jobs
       - publish-openstack-docs-pti
       - openstack-python36-jobs
