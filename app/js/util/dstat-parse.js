@@ -38,7 +38,7 @@ var parseDstat = function(data, year) {
   // assume UTC - may not necessarily be the case?
   // dstat doesn't include the year in its logs, so we'll need to copy it
   // from the subunit logs
-  var dateFormat = timeFormat.utcParse('%d-%m %H:%M:%S');
+  var dateFormat = timeFormat.utcParse('%Y-%d-%m %H:%M:%S');
 
   var parsed = dsv.csvParseRows(data, function(row, i) {
     if (i === 0) {
@@ -47,13 +47,13 @@ var parseDstat = function(data, year) {
           !row[0].endsWith('CSV output')) {
         throw new Error('Invalid Dstat CSV');
       }
-    } else if (i <= 4) { // header rows - ignore
+    } else if (i <= 3) { // header rows - ignore
       return null;
-    } else if (i === 5) { // primary
+    } else if (i === 4) { // primary
       primaryNames = row;
       fillArrayRight(primaryNames);
       return null;
-    } else if (i === 6) { // secondary
+    } else if (i === 5) { // secondary
       secondaryNames = row;
 
       names = mergeNames(primaryNames, secondaryNames);
@@ -66,8 +66,7 @@ var parseDstat = function(data, year) {
         var value = row[col];
         if (value && name) {
           if (name === 'system_time') {
-            value = dateFormat(value);
-            value.setFullYear(1900 + year);
+            value = dateFormat((1900 + year) + '-' + value);
           } else {
             value = parseFloat(value);
           }
