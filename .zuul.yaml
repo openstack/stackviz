@@ -11,8 +11,7 @@
       - nodejs8-jobs
       - openstack-python-jobs
       - publish-openstack-docs-pti
-      - openstack-python36-jobs
-      - openstack-python37-jobs
+      - openstack-python3-train-jobs
     periodic:
       jobs:
         - periodic-package-stackviz-element
