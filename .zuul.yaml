@@ -9,9 +9,8 @@
 - project:
     templates:
       - nodejs8-jobs
-      - openstack-python-jobs
       - publish-openstack-docs-pti
-      - openstack-python3-train-jobs
+      - openstack-python3-ussuri-jobs
     periodic:
       jobs:
         - periodic-package-stackviz-element
