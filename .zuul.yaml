@@ -10,7 +10,25 @@
     templates:
       - nodejs8-jobs
       - publish-openstack-docs-pti
+      - openstack-python35-jobs
       - openstack-python3-ussuri-jobs
+    check:
+      jobs:
+      - tempest-full-py3:
+          irrelevant-files: &irrelevant-files
+            - ^.*\.rst$
+            - ^doc/.*$
+            - ^releasenotes/.*$
+            - ^/stackviztests/.*$
+            - ^.coveragerc$
+            - ^.gitignore$
+            - ^.gitreview$
+      - tempest-full-train-py3:
+          irrelevant-files: *irrelevant-files
+      - tempest-full-stein-py3:
+          irrelevant-files: *irrelevant-files
+      - tempest-full-rocky-py3:
+          irrelevant-files: *irrelevant-files
     periodic:
       jobs:
         - periodic-package-stackviz-element
