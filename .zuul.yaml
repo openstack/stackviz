@@ -1,11 +1,3 @@
-- job:
-    name: periodic-package-stackviz-element
-    parent: legacy-publish-openstack-artifacts
-    run: playbooks/legacy/periodic-package-stackviz-element/run.yaml
-    post-run: playbooks/legacy/periodic-package-stackviz-element/post.yaml
-    branches: master
-    timeout: 1800
-
 - project:
     templates:
       - nodejs8-jobs
@@ -29,6 +21,6 @@
           irrelevant-files: *irrelevant-files
       - tempest-full-rocky-py3:
           irrelevant-files: *irrelevant-files
-    periodic:
+    post:
       jobs:
-        - periodic-package-stackviz-element
+        - publish-openstack-stackviz-element
