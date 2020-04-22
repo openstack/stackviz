@@ -19,7 +19,15 @@ Local Stackviz
    readme
    installation
    usage
-   contributing
+
+For Contributor
+---------------
+If you are a new contributor to Stackviz please refer: :doc:`contributor/contributing`
+
+.. toctree::
+   :hidden:
+
+   contributor/contributing
 
 Manual Pages
 ------------
