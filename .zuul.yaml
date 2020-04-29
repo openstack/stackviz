@@ -1,3 +1,9 @@
+- job:
+    name: tempest-full-rocky
+    parent: tempest-full-py3
+    nodeset: openstack-single-node-xenial
+    override-checkout: stable/rocky
+
 - project:
     templates:
       - nodejs8-jobs
@@ -19,7 +25,7 @@
           irrelevant-files: *irrelevant-files
       - tempest-full-stein-py3:
           irrelevant-files: *irrelevant-files
-      - tempest-full-rocky-py3:
+      - tempest-full-rocky:
           irrelevant-files: *irrelevant-files
     post:
       jobs:
