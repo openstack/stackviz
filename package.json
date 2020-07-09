@@ -70,7 +70,7 @@
     "watchify": "3.7.0"
   },
   "scripts": {
-    "postinstall": "if [ ! -d .venv ]; then tox -epy36 --notest; fi",
+    "postinstall": "if [ ! -d .venv ]; then tox -epy38 --notest; fi",
     "test": "gulp unit",
     "lint": "eslint ./",
     "prod": "gulp prod; python setup.py sdist"
