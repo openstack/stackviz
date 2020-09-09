@@ -23,7 +23,8 @@ sys.path.insert(0, os.path.abspath('../..'))
 extensions = [
     'sphinx.ext.autodoc',
     #'sphinx.ext.intersphinx',
-    'openstackdocstheme'
+    'openstackdocstheme',
+    'sphinxcontrib.rsvgconverter'
 ]
 
 # openstackdocstheme options
@@ -31,6 +32,7 @@ openstackdocs_repo_name = 'openstack/stackviz'
 openstackdocs_auto_name = False
 openstackdocs_bug_project = 'stackviz'
 openstackdocs_bug_tag = ''
+openstackdocs_pdf_link = True
 
 # autodoc generation is a bit aggressive and a nuisance when doing heavy
 # text edit cycles.
@@ -78,3 +80,19 @@ latex_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 #intersphinx_mapping = {'http://docs.python.org/': None}
+
+# -- Options for LaTeX output -------------------------------------------------
+
+# Grouping the document tree into LaTeX files. List of tuples
+# (source start file, target name, title, author, documentclass
+# [howto/manual]).
+latex_documents = [
+   ('index', 'doc-stackviz.tex', u'Stackviz',
+    u'OpenStack Foundation', 'manual'),
+]
+
+# Disable usage of xindy https://bugzilla.redhat.com/show_bug.cgi?id=1643664
+latex_use_xindy = False
+latex_elements = {
+    'extraclassoptions': 'openany,oneside',
+}
