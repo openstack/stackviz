@@ -1,5 +1,6 @@
 python-subunit>=0.0.18
 testtools>=0.9.30
 testrepository>=0.0.18
-subunit2sql>=0.8.0
+oslo.db>=6.0.0;python_version>='3.6'
+oslo.db==6.0.0;python_version<='3.5'
 six
