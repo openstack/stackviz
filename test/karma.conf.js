@@ -12,7 +12,7 @@ module.exports = function(config) {
     preprocessors: {
       'app/js/**/*.js': ['browserify', 'coverage']
     },
-    browsers: ['Chrome'],
+    browsers: ['Firefox'],
     reporters: ['progress', 'subunit'],
 
     autoWatch: true,

@@ -34,8 +34,7 @@
     check:
       jobs:
       - stackviz-nodejs10-run-lint
-      # TODO(gmann): skip until bug#1908606
-      #- stackviz-nodejs10-run-test-browser
+      - stackviz-nodejs10-run-test-browser
       - tempest-full-py3:
           irrelevant-files: &irrelevant-files
             - ^.*\.rst$
@@ -54,7 +53,7 @@
     gate:
       jobs:
       - stackviz-nodejs10-run-lint
-      #- stackviz-nodejs10-run-test-browser
+      - stackviz-nodejs10-run-test-browser
 
     post:
       jobs:
