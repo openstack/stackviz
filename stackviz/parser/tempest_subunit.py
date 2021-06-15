@@ -27,8 +27,8 @@ from testtools import StreamResult
 from testtools import StreamSummary
 from testtools import StreamToDict
 
-from testrepository.repository.file import RepositoryFactory
-from testrepository.repository.file import RepositoryNotFound
+from stestr.repository.abstract import RepositoryNotFound
+from stestr.repository.file import RepositoryFactory
 
 
 NAME_SCENARIO_PATTERN = re.compile(r'^(.+) \((.+)\)$')
@@ -177,7 +177,7 @@ def get_providers(repository_paths=None, stream_paths=None, stdin=False):
     """Loads all test providers from locations configured in settings.
 
     :param repository_paths: a list of directory paths containing
-                            '.testrepository' folders to read
+                            '.stestr' folders to read
     :param stream_paths: a list of paths to direct subunit streams
     :param stdin: if true, read a subunit stream from standard input
     :return: a dict of loaded provider names and their associated

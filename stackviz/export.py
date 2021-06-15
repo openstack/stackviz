@@ -227,7 +227,7 @@ def main():
                         help="Include the given direct subunit stream; can be "
                              "used multiple times.")
     parser.add_argument("-r", "--repository",
-                        help="A directory containing a `.testrepository` to "
+                        help="A directory containing a `.stestr` to "
                              "include; can be used multiple times.")
     parser.add_argument("-i", "--stdin",
                         help="Read a direct subunit stream from standard "

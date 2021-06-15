@@ -17,19 +17,19 @@ describe('Unit: DatasetService', function() {
           "content_type": "text/csv", "artifact_name": "dstat-csv.txt"
         }, {
           "artifact_type": "subunit", "primary": true,
-          "path": "testrepository.subunit-0-raw.json",
+          "path": "stestr.subunit-0-raw.json",
           "content_type": "application/json",
-          "artifact_name": "testrepository.subunit"
+          "artifact_name": "stestr.subunit"
         }, {
           "artifact_type": "subunit-details", "primary": false,
-          "path": "testrepository.subunit-0-details.json",
+          "path": "stestr.subunit-0-details.json",
           "content_type": "application/json",
-          "artifact_name": "testrepository.subunit"
+          "artifact_name": "stestr.subunit"
         }, {
           "artifact_type": "subunit-stats", "primary": false,
-          "path": "testrepository.subunit-0-stats.json",
+          "path": "stestr.subunit-0-stats.json",
           "content_type": "application/json",
-          "artifact_name": "testrepository.subunit"
+          "artifact_name": "stestr.subunit"
         }
       ]
     }]
@@ -62,7 +62,7 @@ describe('Unit: DatasetService', function() {
   it('should only have valid primary artifacts', function() {
     service.groups(true).then(function(groups) {
       expect(groups.length).toEqual(1);
-      expect(groups).toContain('testrepository.subunit');
+      expect(groups).toContain('stestr.subunit');
     }, function() {
       fail('callback should return');
     });
@@ -71,7 +71,7 @@ describe('Unit: DatasetService', function() {
   });
 
   it('should find all artifacts matching a particular name', function() {
-    service.artifacts('testrepository.subunit').then(function(artifacts) {
+    service.artifacts('stestr.subunit').then(function(artifacts) {
       expect(artifacts.length).toEqual(3);
     }, function() {
       fail('callback should return');
@@ -81,11 +81,11 @@ describe('Unit: DatasetService', function() {
   });
 
   it('should load an artifact', function() {
-    httpBackend.whenGET('data/testrepository.subunit-0-raw.json').respond({
+    httpBackend.whenGET('data/stestr.subunit-0-raw.json').respond({
       mock: true
     });
 
-    service.artifact('testrepository.subunit', 'subunit').then(function(resp) {
+    service.artifact('stestr.subunit', 'subunit').then(function(resp) {
       expect(resp.data).toEqual({ mock: true });
     }, function(ex) {
       fail('promise should return successfully: ' + ex);

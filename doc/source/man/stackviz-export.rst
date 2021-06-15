@@ -27,7 +27,7 @@ directory will be created. One of the following input options must be chosen:
     Instructs stackviz-export to read a subunit stream from stdin.
 
 **-r, --repository REPOSITORY**
-    Specifies a :code:`.testrepository` to read subunit streams from. This
+    Specifies a :code:`.stestr` to read subunit streams from. This
     argument can be used multiple times to specify additional repositories.
 
 Stackviz also visualizes machine utilization statistics using dstat. To attach
