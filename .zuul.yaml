@@ -35,10 +35,14 @@
 - project:
     templates:
       - publish-openstack-docs-pti
-      - openstack-python35-jobs
-      - openstack-python3-yoga-jobs
     check:
       jobs:
+      - openstack-tox-pep8
+      - openstack-tox-py35
+      - openstack-tox-py36
+      - openstack-tox-py37
+      - openstack-tox-py38
+      - openstack-tox-py39
       - stackviz-nodejs10-run-lint
       - stackviz-nodejs10-run-test-browser
       - tempest-full-py3:
@@ -58,6 +62,12 @@
           irrelevant-files: *irrelevant-files
     gate:
       jobs:
+      - openstack-tox-pep8
+      - openstack-tox-py35
+      - openstack-tox-py36
+      - openstack-tox-py37
+      - openstack-tox-py38
+      - openstack-tox-py39
       - stackviz-nodejs10-run-lint
       - stackviz-nodejs10-run-test-browser
 
