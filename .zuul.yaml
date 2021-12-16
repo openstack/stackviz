@@ -32,6 +32,12 @@
     nodeset: openstack-single-node-bionic
     override-checkout: stable/stein
 
+- job:
+    name: tempest-full-train
+    parent: tempest-full-py3
+    nodeset: openstack-single-node-bionic
+    override-checkout: stable/train
+
 - project:
     templates:
       - publish-openstack-docs-pti
@@ -54,7 +60,7 @@
             - ^.coveragerc$
             - ^.gitignore$
             - ^.gitreview$
-      - tempest-full-train-py3:
+      - tempest-full-train:
           irrelevant-files: *irrelevant-files
       - tempest-full-stein:
           irrelevant-files: *irrelevant-files
