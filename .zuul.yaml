@@ -64,10 +64,6 @@
             - ^.gitreview$
       - tempest-full-train:
           irrelevant-files: *irrelevant-files
-      - tempest-full-stein:
-          irrelevant-files: *irrelevant-files
-      - tempest-full-rocky:
-          irrelevant-files: *irrelevant-files
     gate:
       jobs:
       - openstack-tox-pep8
