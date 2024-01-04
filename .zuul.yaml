@@ -31,8 +31,8 @@
       - openstack-tox-py37
       - openstack-tox-py38
       - openstack-tox-py39
-      - openstack-tox-py310:
-          voting: false
+      - openstack-tox-py310
+      - openstack-tox-py311
       - stackviz-nodejs10-run-lint
       - stackviz-nodejs10-run-test-browser
       - tempest-full-py3:
@@ -54,6 +54,8 @@
       - openstack-tox-py37
       - openstack-tox-py38
       - openstack-tox-py39
+      - openstack-tox-py310
+      - openstack-tox-py311
       - stackviz-nodejs10-run-lint
       - stackviz-nodejs10-run-test-browser
 
