@@ -20,24 +20,6 @@
     required-projects:
       - openstack/stackviz
 
-- job:
-    name: tempest-full-rocky
-    parent: tempest-full-py3
-    nodeset: openstack-single-node-xenial
-    override-checkout: stable/rocky
-
-- job:
-    name: tempest-full-stein
-    parent: tempest-full-py3
-    nodeset: openstack-single-node-bionic
-    override-checkout: stable/stein
-
-- job:
-    name: tempest-full-train
-    parent: tempest-full-py3
-    nodeset: openstack-single-node-bionic
-    override-checkout: stable/train
-
 - project:
     templates:
       - publish-openstack-docs-pti
@@ -62,7 +44,7 @@
             - ^.coveragerc$
             - ^.gitignore$
             - ^.gitreview$
-      - tempest-full-train:
+      - tempest-full-zed:
           irrelevant-files: *irrelevant-files
     gate:
       jobs:
