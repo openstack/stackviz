@@ -11,7 +11,7 @@
     "angular-mocks": "1.5.2",
     "angular-ui-bootstrap": "1.2.5",
     "angular-ui-router": "0.2.18",
-    "bootstrap": "3.3.6",
+    "bootstrap": "3.4.1",
     "browser-sync": "2.11.2",
     "browserify": "13.0.0",
     "browserify-istanbul": "2.0.0",
