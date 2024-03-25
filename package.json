@@ -31,7 +31,7 @@
     "eslint": "~1.10.3",
     "eslint-config-openstack": "1.2.4",
     "eslint-plugin-angular": "0.12.0",
-    "express": "4.13.4",
+    "express": "4.19.2",
     "gulp": "3.9.1",
     "gulp-angular-templatecache": "1.8.0",
     "gulp-autoprefixer": "3.1.0",
