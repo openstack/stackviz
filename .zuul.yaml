@@ -20,6 +20,15 @@
     required-projects:
       - openstack/stackviz
 
+- job:
+    name: tempest-full-oldest-stable
+    parent: tempest-full-py3
+    # NOTE(gmann): This job supposed to test the oldest supported stable
+    # release. We need to update the override-checkout once oldest
+    # stable is moved to next stable release.
+    override-checkout: stable/2023.1
+    nodeset: openstack-single-node-jammy
+
 - project:
     templates:
       - publish-openstack-docs-pti
@@ -44,7 +53,7 @@
             - ^.coveragerc$
             - ^.gitignore$
             - ^.gitreview$
-      - tempest-full-zed:
+      - tempest-full-oldest-stable:
           irrelevant-files: *irrelevant-files
     gate:
       jobs:
