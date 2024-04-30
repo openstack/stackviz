@@ -35,9 +35,6 @@
     check:
       jobs:
       - openstack-tox-pep8
-      - openstack-tox-py35
-      - openstack-tox-py36
-      - openstack-tox-py37
       - openstack-tox-py38
       - openstack-tox-py39
       - openstack-tox-py310
@@ -58,9 +55,6 @@
     gate:
       jobs:
       - openstack-tox-pep8
-      - openstack-tox-py35
-      - openstack-tox-py36
-      - openstack-tox-py37
       - openstack-tox-py38
       - openstack-tox-py39
       - openstack-tox-py310
