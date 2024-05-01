@@ -12,8 +12,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import six
-
 from datetime import datetime
 from datetime import timedelta
 
@@ -147,7 +145,7 @@ class LogNode(object):
                 else:
                     if value is None:
                         p.text(tc.Blue)
-                    elif isinstance(value, six.string_types):
+                    elif isinstance(value, str):
                         p.text(tc.Red)
                     elif isinstance(value, Number):
                         p.text(tc.DarkGray)
